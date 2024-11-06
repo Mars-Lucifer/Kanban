@@ -8,6 +8,30 @@
     <link rel="icon" href="{{ url_for('static', filename='icons/logo.png') }}" type="image/x-icon">
 </head>
 <body>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="pop-up" id="popMain">
+            <div id="pop" class="pop-up__table">
+                <div class="pop-up__table__block">
+                    <h1>Здравствуйте</h1>
+                    <p class="gray-color">
+                        {% for message in messages %}
+                            {{ message }}
+                        {% endfor %}
+                    </p>
+                </div>
+                <div class="pop-up__table__btn-block">
+                    <a href="/signup" class="btn btn_blue w100">Регистрация</a>
+                    <a href="/signin" class="btn btn_gray w100">Вход</a>
+                </div>
+            </div>
+            <button id="pop2" onclick="close_pop()" class="pop-up__close">
+                <img src="{{ url_for('static', filename='icons/close.svg') }}" alt="close">
+            </button>
+        </div>
+        {% endif %}
+    {% endwith %}
+    
     <div class="sidebar__space">
         <div class="sidebar" id="sidebar">
             <div class="logo-container">

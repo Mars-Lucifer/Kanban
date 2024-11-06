@@ -40,3 +40,18 @@ function updateParentWidth() {
 // Вызов при загрузке и обновлении
 updateParentWidth();
 window.addEventListener('resize', updateParentWidth);
+
+
+function close_pop() {
+  let popMain = document.getElementById("popMain");
+  let pop = document.getElementById("pop");
+  let pop2 = document.getElementById("pop2");
+  pop.classList.add("pop-up_close");
+  pop2.classList.add("pop-up_close");
+  popMain.classList.add("pop-up-main_close");
+}
+
+// Функция для закрытия pop-up
+function close_pop() {
+  document.getElementById("popMain").style.display = "none";
+}

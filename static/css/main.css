@@ -370,3 +370,124 @@ h3 {
 .sidebar .page img {
     transition: width 0.5s ease, height 0.5s ease; /* Плавное изменение размера значков */
 }
+
+.pop-up {
+    position: fixed;
+    z-index: 5;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #0C1D3D1A;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.pop-up__table {
+    width: 560px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background-color: #FFFFFF;
+    border-radius: 36px;
+    padding: 26px;
+    gap: 24px;
+    box-shadow: 0 18px 64px #0C1D3D33;
+}
+
+.pop-up__table__block {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.pop-up__table__button {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.pop-up__close {
+    display: flex;
+    width: fit-content;
+    justify-content: center;
+    align-items: center;
+    border-radius: 100px;
+    padding: 10px;
+    background: none;
+    border: none;
+    outline: none;
+    background-color: #fff;
+    box-shadow: 0 8px 48px #0C1D3D33;
+    cursor: pointer;
+    z-index: 6;
+}
+
+.pop-up__close img {
+    height: 26px;
+}
+
+@keyframes popUpClose {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+        filter: blur(0);
+    }
+    10% {
+        transform: scale(1.05);
+    }
+    100% {
+        filter: blur(4px);
+        display: none;
+        opacity: 0;
+        transform: scale(0.9);
+    }
+}
+
+@keyframes popUpMainClose {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        display: none;
+        opacity: 0;
+    }
+}
+
+.pop-up_close {
+    animation: popUpClose 1s ease forwards;
+}
+
+.pop-up-main_close {
+    animation: popUpMainClose 1s ease forwards;
+}
+
+.pop-up__table__btn-block {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+}
+
+.btn {
+    display: flex;
+    padding: 14px 18px;
+    border-radius: 16px;
+    gap: 12px;
+    align-items: center;
+    background-color: #0C1D3D;
+    color: #F7F9FC;
+}
+
+.btn_blue {
+    background-color: #1964FA;
+}
+
+.btn_gray {
+    background-color: #F7F9FC;
+    color: #AFB6C7;
+}
+
+.w100 {
+    width: 100%;
+}
