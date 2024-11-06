@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block title %}Страница создания резюме{% endblock %}
+
+{% block content %}
+<div class="right_block gray-color">
+    <div class="candidate">
+        <div class="text_and_img gap-32">
+            <div class="resume-photo">
+                <img src="/static/img/1.png" alt="photo">
+            </div>
+            <div class="about_person gap-8">
+                <input type="text" placeholder="ФИО" />
+                <input type="text" placeholder="Должность" />
+                <input type="text" placeholder="Ожидаемая ЗП" />
+            </div>
+        </div>
+        <div class="info-block">
+            <div class="info-pills">
+                <div class="resume_inf_block">
+                    <p>Лет опыта</p>
+                    <input type="text" placeholder="Введите количество лет" />
+                </div>
+                <div class="resume_inf_block">
+                    <p>Дата рождения</p>
+                    <input type="date" placeholder="Выберите дату" />
+                </div>
+            </div>
+            <div class="info-pills">
+                <div class="resume_inf_block">
+                    <p>Номер телефона</p>
+                    <input type="tel" placeholder="Введите номер телефона" />
+                </div>
+                <div class="resume_inf_block">
+                    <p>Эл. почта</p>
+                    <input type="email" placeholder="Введите email" />
+                </div>
+            </div>
+        </div>
+        <div class="skills">
+            <div class="skill">
+                <img src="/static/icons/add.svg" alt="">
+                <input type="text" placeholder="Введите тег..." />
+            </div>
+        </div>
+        <div class="resume_inf_block">
+            <img src="/static/icons/school.svg" alt="">
+            <p class="gray-color">Образование</p>
+            <input type="text" placeholder="Введите информацию об образовании" />
+        </div>
+        <div class="inf_hr_history resume_inf_block">
+            <img src="/static/icons/chat.svg" alt="">
+            <p class="gray-color">Комментарий</p>
+            <input type="text" placeholder="Введите комментарий" />
+        </div>
+        <a class="resume_inf_block bk-blue right" href="#">
+            <p>Создать резюме</p>
+            <img src="/static/icons/add_circle.svg" alt="">
+        </a>
+    </div>
+    
+    <div class="files">
+        <p class="h1 black-color">Советы</p>
+        <div class="info-block">
+            <div class="advice">
+                <img src="/static/icons/info.svg" alt="">
+                <p>Здесь вы можете создать резюме кандидата, старайтесь избегать ошибок, но при необходимости вы сможете отредактировать его</p>
+            </div>
+            <div class="advice">
+                <img src="/static/icons/info.svg" alt="">
+                <p>Для передачи резюме на этап скрининга или интервью вас могут попросить прикрепить соответствующие файлы. Хотя это не обязательно, но рекомендуется</p>
+            </div>
+            <div class="advice">
+                <img src="/static/icons/info.svg" alt="">
+                <p>При наведении на определенные элементы в канбан-доске, вы можете увидеть их полную версию. Например, при наведении на имя HR-а, вы увидите его полное имя</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

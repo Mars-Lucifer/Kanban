@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+{% block title %}Резюме{% endblock %}
+
+{% block content %}
+    <div class="right_block">
+        <div class="candidate">
+            <div class="text_and_img gap-32">
+                <div class="resume-photo">
+                    <img src="/static/img/1.png" alt="photo">
+                </div>
+                <div class="about_person gap-8">
+                    <h1>Зубенко Иван Иванович</h1>
+                    <h3 class="blue-color">Фронтенд разработчик</h3>
+                    <h4>Ожидаемая ЗП: 100 000р</h4>
+                </div>
+            </div>
+            <div class="info-block">
+                <div class="info-pills">
+                    <div class="resume_inf_block bk-blue">
+                        <p>20 лет опыта</p>
+                    </div>
+                    <div class="resume_inf_block bk-blue">
+                        <p>Родился 9 октября 1990 года</p>
+                    </div>
+                </div>
+                <div class="info-pills">
+                    <div class="resume_inf_block">
+                        <img src="/static/icons/call.svg" alt="telephone">
+                        <p>+7 (800) 555-35-35</p>
+                    </div>
+                    <div class="resume_inf_block">
+                        <img src="/static/icons/email.svg" alt="">
+                        <p>nonmail@gmail.com</p>
+                    </div>
+                </div>
+            </div>
+            <div class="skills">
+                <div class="skill">
+                    <p>HTML</p>
+                </div>
+                <div class="skill">
+                    <p>CSS</p>
+                </div>
+                <div class="skill">
+                    <p>JS</p>
+                </div>
+                <div class="skill">
+                    <p>React</p>
+                </div>
+                <div class="skill">
+                    <p>Next.JS</p>
+                </div>
+                <div class="skill">
+                    <p>Word</p>
+                </div>
+                <div class="skill">
+                    <p>Excel</p>
+                </div>
+            </div>
+            <div class="education">
+                <img src="/static/icons/school.svg" alt="">
+                <p class="gray-color">Высший технологический университет Москвы</p>
+            </div>
+            <div class="inf_hr_history">
+                <img src="/static/icons/icon.svg" alt="">
+                <p class="gray-color">Виктор Викторович</p>
+            </div>
+            <div class="inf_hr_history">
+                <img src="/static/icons/history.svg" alt="">
+                <p class="gray-color">3 дня назад</p>
+            </div>
+            <div class="inf_hr_history">
+                <img src="/static/icons/chat.svg" alt="">
+                <p class="gray-color">Зубенко Иван Иванович - опытный HR специалист с высоким уровнем профессионализма. Душевный человечек, пользуется спросом в других фирмах, очень хороший прентендент</p>
+            </div>
+            <a class="resume_inf_block gray-color right">
+                <p>Редактировать</p>
+                <img src="/static/icons/edit.svg" alt="">
+            </a>
+        </div>
+        <div class="files">
+            <p class="h1">Файлы</p>
+            <div class="info-block">
+                <div class="info-pills">
+                    <div class="resume_inf_block">
+                        <img src="/static/icons/done.svg" alt="done">
+                        <p>Скрининг</p>
+                    </div>
+                    <div class="resume_inf_block attach">
+                        <p class="gray-color">Прикрепить</p>
+                    </div>
+                </div>
+                <div class="info-pills">
+                    <div class="resume_inf_block">
+                        <img src="/static/icons/done.svg" alt="done">
+                        <p>Результат собеседования</p>
+                    </div>
+                    <div class="resume_inf_block attach">
+                        <p class="gray-color">Прикрепить</p>
+                    </div>
+                </div>
+                <div class="info-pills">
+                    <div class="resume_inf_block">
+                        <img src="/static/icons/notdone.svg" alt="notdone">
+                        <p>Оффер</p>
+                    </div>
+                    <div class="resume_inf_block attach bk-blue">
+                        <p>Прикрепить</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

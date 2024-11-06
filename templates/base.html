@@ -3,22 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}{% endblock %}</title>
+    <title>{% block title %}Канбан{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-    <link rel="icon" href="{{ url_for('static', filename='icons/icon.ico') }}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='icons/logo.png') }}" type="image/x-icon">
 </head>
 <body>
-    <!-- Хедер -->
-    <header>
-    </header>
+    <div class="sidebar__space">
+        <div class="sidebar" id="sidebar">
+            <div class="logo-container">
+                <img src="/static/icons/logo.svg" alt="Логотип" class="logo">
+            </div>
+            <div class="top">
+                <div class="datetime" id="datetime">
+                    <img src="/static/icons/logo.svg" alt="Логотип" class="logo" style="display: none;">
+                    <time id="currentTime" class="h1" style="font-variant-numeric: tabular-nums;"></time>
+                    <div class="date">
+                        <p id="currentDate" class="current-date gray-color"></p>
+                    </div>
+                </div>
+                <a href="/" class="{% if request.path == '/' %}active{% endif %} page gray-color">
+                    <img src="/static/icons/note_stack.svg" alt="Канбан доска">
+                    <span id="toggle-button">Канбан-доска</span>
+                </a>
+                <a href="/create" class="{% if request.path == '/create' %}active{% endif %} page gray-color">
+                    <img src="/static/icons/add_circle.svg" alt="Создание записей">
+                    <span id="toggle-button">Создание записей</span>
+                </a>
+                <a href="/info" class="{% if request.path == '/info' %}active{% endif %} page gray-color">
+                    <img src="/static/icons/help.svg" alt="Информация">
+                    <span id="toggle-button">Информация</span>
+                </a>
+            </div>
+            <div class="bottom">
+                <button class="page active active_roll" onclick="toggleSidebar()">
+                    <span id="toggle-button">Свернуть</span>
+                    <img id="toggle-arrow" src="/static/icons/arrow_cool_down.svg" alt="0">
+                </button>
+                <a href="" class="page active">
+                    <img src="/static/icons/icon.svg" alt="Профиль">
+                    <span id="toggle-button">Анастасия К</span>
+                </a>
+            </div>
+        </div>  
+    </div>  
 
     <!-- Контент -->
     {% block content %}{% endblock %}
-
-    <!-- Футер -->
-    <footer>
-    </footer>
-
+    
     <script src="{{ url_for('static', filename='main.js') }}"></script>
 </body>
 </html>

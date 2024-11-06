@@ -3,41 +3,63 @@
 {% block title %}Главная страница{% endblock %}
 
 {% block content %}
-<div class="sidebar">
-    <div class="time">
-        <p>12:32</p>
-        <p>Wednesday</p>
-        <p>21 October</p>
-    </div>
-    <button class="create-btn">Создание записей</button>
-    <button class="info-btn">Информация</button>
-</div>
-
 <div class="kanban-container">
     <div class="column">
-        <h2>Статус резюме</h2>
-        <div class="card">Иван Иванович<br>Front-end разработчик</div>
+        <h4>Стакан резюме</h4>
+        <a href="/resume" class="card">
+            <div class="text_and_img">
+                <div class="photo-card">
+                    <img src="/static/img/1.png" alt="">
+                </div>
+                <div class="about_person">
+                   <h3>Иван <span class="gray-color">Иванович</span></h3>
+                    <p>Фронтенд разработчик</p> 
+                </div>
+            </div>
+            <div class="skills">
+                <div class="skill">
+                    <p>20 лет опыта</p>
+                </div>
+                <div class="skill">
+                    <p>HTML</p>
+                </div>
+                <div class="skill">
+                    <p>CSS</p>
+                </div>
+                <div class="skill">
+                    <p>JS</p>
+                </div>
+            </div>
+            <div class="inf_hr_history">
+                <img src="/static/icons/icon.svg" alt="">
+                <p class="gray-color">Виктор Викторович</p>
+            </div>
+            <div class="inf_hr_history">
+                <img src="/static/icons/history.svg" alt="">
+                <p class="gray-color">3 дня назад</p>
+            </div>
+        </a>
         <div class="card">Петр Артурович<br>Backend разработчик</div>
         <div class="card">Аня Сергеевна<br>Аналитик</div>
     </div>
     <div class="column">
-        <h2>Теплый контакт</h2>
+        <h4>Теплый контакт</h4>
         <div class="card">Евгений Михайлович<br>Ethnologist</div>
     </div>
     <div class="column">
-        <h2>Скрининг</h2>
+        <h4>Скрининг</h4>
         <div class="card">Артур Артурович<br>UI/UX</div>
     </div>
     <div class="column">
-        <h2>Интервью</h2>
+        <h4>Интервью</h4>
         <div class="card">Петр Артурович<br>Digital marketing</div>
     </div>
     <div class="column">
-        <h2>Проверка СБ</h2>
+        <h4>Проверка СБ</h4>
         <div class="card">Петр Артурович<br>Digital marketing</div>
     </div>
     <div class="column">
-        <h2>Оффер</h2>
+        <h4>Оффер</h4>
         <div class="card">Петр Артурович<br>Digital marketing</div>
     </div>
 </div>
