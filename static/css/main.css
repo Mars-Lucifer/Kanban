@@ -283,92 +283,17 @@ h3 {
     gap: 8px;
 }
 
-
-
-
-
-#toggle-button {
-    transition: opacity 0.3s ease-in-out; /* Плавный переход */
-    opacity: 1; /* Полная видимость по умолчанию */
-    background: none; /* Убираем фон кнопки, если есть */
-    border: none; /* Убираем рамку кнопки, если есть */
-    cursor: pointer; /* Указатель курсора на кнопке */
+input {
+    border: none;
+    background-color: #F7F9FC;
+    font-size: 16px;
+    color: #AFB6C7;
+    outline: none;
+    font-weight: 600;
 }
 
-.sidebar.collapsed #toggle-button {
-    opacity: 0; /* Полная прозрачность при сворачивании */
-    pointer-events: none; /* Отключение взаимодействия с кнопкой */
-}
-
-
-
-
-
-/* Скрываем логотип по умолчанию */
-.logo-container {
-    opacity: 0;
-    transition: opacity 0.6s ease-in-out;
-    display: none;
-    justify-content: center;
-    align-items: center;
-    padding: 16px;
-}
-
-/* Показываем логотип в свернутом состоянии */
-.sidebar.collapsed .logo-container {
-    display: flex;
-    opacity: 1;
-}
-
-/* Скрываем блок с датой и временем в свернутом состоянии */
-.sidebar.collapsed .datetime {
-    display: none;
-}
-
-
-
-
-/* Плавный переход для изменения ширины и opacity */
-.sidebar {
-    transition: width 0.5s ease, padding 0.5s ease;
-}
-
-.sidebar.collapsed {
-    width: 80px; /* Узкая ширина в свернутом состоянии */
-    padding: 10px; /* Уменьшение отступов */
-}
-
-.top .datetime,
-.page a {
-    transition: opacity 0.5s ease ease-in-out 0.1s; /* Плавное скрытие элементов */
-}
-
-.sidebar.collapsed .top .datetime #currentTime,
-.sidebar.collapsed .top .datetime #currentDate,
-.sidebar.collapsed .page a {
-    opacity: 0; /* Полное скрытие времени, даты и текста ссылок */
-    pointer-events: none; /* Отключение кликов */
-}
-
-.sidebar.collapsed .top .datetime .logo {
-    display: inline; /* Показ логотипа */
-    opacity: 1; /* Полная видимость логотипа */
-    transition: opacity 0.5s ease; /* Плавный переход видимости логотипа */
-}
-
-.page img {
-    width: 24px; 
-    height: 24px;
-    transition: margin 0.5s ease; /* Плавный переход для выравнивания значков */
-}
-
-.sidebar.collapsed .page img {
-    margin: 0 auto; /* Центрирование значков */
-}
-
-.sidebar.collapsed .page img, 
-.sidebar .page img {
-    transition: width 0.5s ease, height 0.5s ease; /* Плавное изменение размера значков */
+input::placeholder {
+    color: #AFB6C7;
 }
 
 .pop-up {
