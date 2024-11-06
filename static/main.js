@@ -37,6 +37,7 @@ function updateParentWidth() {
   parent.style.width = `${childWidth + parentPadding}px`;
 }
 
+
 // Вызов при загрузке и обновлении
 updateParentWidth();
 window.addEventListener('resize', updateParentWidth);
