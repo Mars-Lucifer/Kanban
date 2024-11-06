@@ -19,13 +19,13 @@ def check_authentication():
     user_cookie = request.cookies.get('user_id')
 
     # 1. Проверка: Есть ли cookie у пользователя
-    if not user_cookie:
+    if user_cookie:
         flash("Пожалуйста, зарегистрируйтесь для доступа.")
         return redirect(url_for('signup'))
 
     # 2. Проверка аккаунта в cookie (здесь заглушка)
     account_exists = True  # допустим, аккаунт в базе данных есть
-    account_verified = False  # допустим, аккаунт не верифицирован
+    account_verified = True  # допустим, аккаунт не верифицирован
 
     if not account_exists:
         flash("Такого аккаунта не существует, войдите в другой или создайте новый.")

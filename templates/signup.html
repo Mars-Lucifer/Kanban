@@ -3,5 +3,59 @@
 {% block title %}Страница регистрации{% endblock %}
 
 {% block content %}
-Страница регистрации
+<div class="right_block">
+    <div class="candidate height-auto">
+        <div class="info-pills">
+            <h1>Регистрация</h1>
+            <a href="/signup" class="resume_inf_block bk-black">Войти в аккаунт</a>
+        </div>
+        <div class="info-pills">
+            <div class="resume_inf_block">
+                <input type="text" placeholder="Фамилия" />
+            </div>
+            <div class="resume_inf_block">
+                <input type="text" placeholder="Имя" />
+            </div>
+        </div>
+        <div class="info-pills">
+            <div class="resume_inf_block">
+                <input type="text" placeholder="Отчество"/>
+            </div>
+            <div class="resume_inf_block bk-white">
+            </div>
+        </div>
+        <div class="info-pills">
+            <div class="resume_inf_block">
+                <input type="text" placeholder="Эл. почта"/>
+            </div>
+            <div class="resume_inf_block">
+                <input type="text" placeholder="Пароль"/>
+            </div>
+        </div>
+        <a class="resume_inf_block bk-blue right" href="#">
+            <p>Зарегестрироваться</p>
+        </a>
+    </div>
+    <div class="files">
+        <p class="h1 black-color">Информация</p>
+        <div class="info-block">
+            <div class="advice gray-color">
+                <img src="/static/icons/info.svg" alt="">
+                <p>Для доступа к сайту необходимо войти в аккаунт HR-а.</p>
+            </div>
+            <div class="advice gray-color">
+                <img src="/static/icons/info.svg" alt="">
+                <p>Верификация подтверждает вашу принадлежность к компании Технологии Надежности и разрешает использовать этот сервис.</p>
+            </div>
+            <div class="advice gray-color">
+                <img src="/static/icons/info.svg" alt="">
+                <p>После регистрации мы проверим ваши данные. Если все в порядке, мы верифицируем ваш аккаунт. После этого вы сможете войти на сайт и использовать канбан-доску.</p>
+            </div>
+            <div class="advice gray-color">
+                <img src="/static/icons/info.svg" alt="">
+                <p>Аккаунты, не прошедшие верификацию, будут заблокированы.</p>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
