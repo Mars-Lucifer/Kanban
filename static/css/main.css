@@ -1,0 +1,64 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    background-color: #f7f7f7;
+    height: 100vh;
+    width: 100%;
+}
+
+.sidebar {
+    width: 200px;
+    background-color: #fff;
+    padding: 20px;
+    border-right: 1px solid #ddd;
+}
+
+.time {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.create-btn, .info-btn {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.kanban-container {
+    display: flex;
+    flex-grow: 1;
+    overflow-x: auto;
+    padding: 20px;
+    gap: 20px;
+    background-color: #eef1f5;
+}
+
+.column {
+    min-width: 200px;
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    text-align: center;
+    margin: 0 0 10px;
+}
+
+.card {
+    background-color: #f1f1f1;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}

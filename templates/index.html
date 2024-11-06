@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}Главная страница{% endblock %}
+
+{% block content %}
+<div class="sidebar">
+    <div class="time">
+        <p>12:32</p>
+        <p>Wednesday</p>
+        <p>21 October</p>
+    </div>
+    <button class="create-btn">Создание записей</button>
+    <button class="info-btn">Информация</button>
+</div>
+
+<div class="kanban-container">
+    <div class="column">
+        <h2>Статус резюме</h2>
+        <div class="card">Иван Иванович<br>Front-end разработчик</div>
+        <div class="card">Петр Артурович<br>Backend разработчик</div>
+        <div class="card">Аня Сергеевна<br>Аналитик</div>
+    </div>
+    <div class="column">
+        <h2>Теплый контакт</h2>
+        <div class="card">Евгений Михайлович<br>Ethnologist</div>
+    </div>
+    <div class="column">
+        <h2>Скрининг</h2>
+        <div class="card">Артур Артурович<br>UI/UX</div>
+    </div>
+    <div class="column">
+        <h2>Интервью</h2>
+        <div class="card">Петр Артурович<br>Digital marketing</div>
+    </div>
+    <div class="column">
+        <h2>Проверка СБ</h2>
+        <div class="card">Петр Артурович<br>Digital marketing</div>
+    </div>
+    <div class="column">
+        <h2>Оффер</h2>
+        <div class="card">Петр Артурович<br>Digital marketing</div>
+    </div>
+</div>
+{% endblock %}

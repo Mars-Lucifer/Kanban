@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='icons/icon.ico') }}" type="image/x-icon">
+</head>
+<body>
+    <!-- Хедер -->
+    <header>
+    </header>
+
+    <!-- Контент -->
+    {% block content %}{% endblock %}
+
+    <!-- Футер -->
+    <footer>
+    </footer>
+
+    <script src="{{ url_for('static', filename='main.js') }}"></script>
+</body>
+</html>
