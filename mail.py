@@ -1,32 +1,56 @@
 import smtplib
-from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from dotenv import load_dotenv
+import os
 
-def send_email_vk(subject, body, to_email, from_email, from_password, smtp_server='smtp.mail.ru', smtp_port=587):
-    try:
-        # Создаем объект сообщения
-        msg = MIMEMultipart()
-        msg['From'] = from_email
-        msg['To'] = to_email
-        msg['Subject'] = subject
+# Загружаем переменные из .env файла
+load_dotenv()
 
-        # Добавляем тело письма
-        msg.attach(MIMEText(body, 'plain'))
+def send_mail_ru_email(recipient_email, subject, html_content):
+    """Отправляет письмо по корпоративной почте mail.ru в формате HTML.
 
-        # Подключаемся к SMTP серверу и отправляем письмо
-        with smtplib.SMTP(smtp_server, smtp_port) as server:
-            server.starttls()  # Включаем защищенное соединение
-            server.login(from_email, from_password)  # Логинимся на почтовом сервере
-            server.sendmail(from_email, to_email, msg.as_string())  # Отправляем письмо
+    Args:
+        recipient_email (str): Адрес получателя.
+        subject (str): Тема письма.
+        html_content (str): HTML-содержимое письма.
 
-        print("Письмо отправлено успешно!")
-    except Exception as e:
-        print(f"Ошибка при отправке письма: {e}")
+    Returns:
+        None
+    """
 
-send_email_vk(
-    subject="Тема письма",
-    body="Текст письма",
-    to_email="nikitarybalko897@gmail.com",
-    from_email="hello@irminsil.space",  # Почта ВКонтакте
-    from_password="LNpR5sEsgvYVdUSPk2pp"  # Пароль от почты
-)
+    # Настройки корпоративной почты mail.ru
+    sender_email = 'hello@irminsul.space'  
+    sender_password = os.getenv('EMAIL_PASSWORD')  # Загружаем пароль из .env
+
+    if not sender_password:
+        raise ValueError("Пароль не найден в переменной окружения.")
+
+    # Создание сообщения
+    msg = MIMEMultipart()
+    msg['From'] = sender_email
+    msg['To'] = recipient_email
+    msg['Subject'] = subject
+
+    # Добавление HTML-содержимого
+    msg.attach(MIMEText(html_content, 'html'))
+
+    # Отправка письма
+    with smtplib.SMTP_SSL('smtp.mail.ru', 465) as server:
+        server.login(sender_email, sender_password)
+        server.sendmail(sender_email, recipient_email, msg.as_string())
+
+# HTML-контент с нужным текстом
+html_content = """
+<html>
+<head>
+  <title>Пример письма от Mail.ru</title>
+</head>
+<body>
+  <h1>Внимание!</h1>
+  <p>Это письмо отправлено с корпоративной почты Mail.ru.</p>
+</body>
+</html>
+"""
+
+send_mail_ru_email('nikitarybalko897@gmail.com', 'Message', html_content)

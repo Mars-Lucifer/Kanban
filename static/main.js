@@ -81,3 +81,30 @@ document.addEventListener("DOMContentLoaded", function() {
       }
   });
 });
+
+function confirmProject(event, resumeId) {
+  // Останавливаем всплытие события, чтобы не перейти по ссылке
+  event.stopPropagation();
+
+  if (confirm("Вы уверены, что хотите вывести это резюме на проект или удалить его?")) {
+      // Если пользователь подтвердил, отправляем запрос на удаление
+      fetch(`/delete_resume/${resumeId}`, {
+          method: 'DELETE',
+          headers: {
+              'Content-Type': 'application/json'
+          }
+      })
+      .then(response => {
+          if (response.ok) {
+              alert("Резюме успешно удалено.");
+              location.reload(); // Обновляем страницу после удаления
+          } else {
+              alert("Ошибка при удалении резюме.");
+          }
+      })
+      .catch(error => {
+          console.error("Ошибка:", error);
+          alert("Произошла ошибка. Попробуйте снова.");
+      });
+  }
+}

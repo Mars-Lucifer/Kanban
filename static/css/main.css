@@ -16,10 +16,6 @@ body {
     color: #0C1D3D;
 }
 
-.height-auto {
-    height: max-content;
-}
-
 a, button {
     font-size: 16px;
     text-decoration: none;
@@ -44,7 +40,6 @@ p {
 h1, .h1 {
     font-size: 40px;
     font-weight: 800;
-    text-wrap: nowrap;
 }
 
 h4 {
@@ -271,7 +266,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     width: 100%;
 }
 
-<<<<<<< HEAD
 .resume_inf_block input {
     width: 100%;
 }
@@ -285,8 +279,6 @@ form .resume_inf_block img {
     color: #F7F9FC;
 }
 
-=======
->>>>>>> c60baadb50119654193167f3451d4859e85628c9
 .education {
     padding: 14px 18px;
     gap: 12px;
@@ -391,20 +383,6 @@ input::placeholder {
     z-index: 6;
 }
 
-.bk-blue{
-    background-color: #1964FA;
-    color: #F7F9FC;
-}
-
-.bk-white {
-    background-color: #FFFFFF;
-}
-
-.bk-black {
-    background-color: #0C1D3D;
-    color: #F7F9FC;
-}
-
 .pop-up__close img {
     height: 26px;
 }
@@ -467,6 +445,10 @@ input::placeholder {
 .btn_gray {
     background-color: #F7F9FC;
     color: #AFB6C7;
+}
+
+.btn_red {
+    background-color: #FA3246;
 }
 
 .w100 {

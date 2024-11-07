@@ -5,7 +5,7 @@ import os, json, timeago
 from datetime import datetime
 from werkzeug.utils import secure_filename
 from flask import Flask, request, render_template, flash, redirect, url_for, make_response, jsonify
-from database import initDb, addUser, addResume, readFromDb, updateInDb, getAllRecords, updateFileInDb
+from database import initDb, addUser, addResume, readFromDb, updateInDb, getAllRecords, updateFileInDb, deleteFromDb
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
@@ -36,15 +36,12 @@ def check_authentication():
     user_cookie = request.cookies.get('user_id')
 
     # 1. Проверка: Есть ли cookie у пользователя
-    if user_cookie:
+    if not user_cookie:
         flash("Пожалуйста, зарегистрируйтесь для доступа.")
         return redirect(url_for('signup'))
 
     # Преобразуем user_id в int, так как он будет храниться как строка
     user_id = int(user_cookie)
-    # 2. Проверка аккаунта в cookie (здесь заглушка)
-    account_exists = True  # допустим, аккаунт в базе данных есть
-    account_verified = True  # допустим, аккаунт не верифицирован
 
     # 2. Проверка аккаунта в базе данных
     user = readFromDb('users', user_id)
@@ -125,6 +122,14 @@ def move_resume():
 
         return jsonify({"status": "success", "message": message, "url": url}), 200
     return jsonify({"status": "error", "message": "Resume not found"}), 404
+
+@app.route('/delete_resume/<int:resume_id>', methods=['DELETE'])
+def delete_resume(resume_id):
+    success = deleteFromDb('resumes', resume_id)  # Удаляем запись из БД
+    if success:
+        return '', 200  # Возвращаем успешный ответ
+    else:
+        return '', 404  # Возвращаем ошибку, если запись не найдена
 
 @app.route('/logout')
 def logout():
@@ -233,17 +238,25 @@ def resume(resume_id):
     if request.method == 'POST':
         files_uploaded = False  # Флаг, показывающий, загружен ли файл
 
-        # Обрабатываем все файлы
         for i in range(1, 4):
             file = request.files.get(f'file_{i}')
-            if file and allowed_file(file.filename):
-                filename = secure_filename(file.filename)
+            if file:
+                # Проверяем файл с функцией allowed_file
+                if allowed_file(file.filename):
+                    # Если файл прошёл проверку, сохраняем его с оригинальным именем
+                    filename = secure_filename(file.filename)
+                else:
+                    # Если файл не прошёл проверку, создаем имя {id_resume}_file_{i}
+                    filename = f"{resume_id}_file_{i}.{file.filename.rsplit('.', 1)[-1]}"
+                
+                # Путь для сохранения файла
                 file_path = os.path.join(UPLOAD_FOLDER, filename)
                 
                 # Создаём папку, если её нет
                 if not os.path.exists(UPLOAD_FOLDER):
                     os.makedirs(UPLOAD_FOLDER)
                 
+                # Сохраняем файл
                 file.save(file_path)
 
                 # Обновляем путь файла в базе данных

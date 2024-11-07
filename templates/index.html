@@ -37,6 +37,12 @@
                 <img src="/static/icons/history.svg" alt="">
                 <p class="gray-color">{{ resume.creation_date }}</p>
             </div>
+
+            <!-- Добавляем кнопку, если column_id == 6 -->
+            {% if column_id == 6 %}
+                <button class="btn" onclick="confirmProject(event, {{ resume.id }})">Вывести на проект</button>
+            {% endif %}
+
         </a>
         {% endfor %}
     </div>

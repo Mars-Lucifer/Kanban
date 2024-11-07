@@ -141,3 +141,21 @@ def updateFileInDb(resume_id, file_num, file_path):
                 return False
     logAction("updateFileInDb", f"Resume with ID {resume_id} not found.")
     return False
+
+def deleteFromDb(table, record_id):
+    with open(db_filename, 'r') as db_file:
+        data = json.load(db_file)
+    
+    table_data = data.get(table, [])
+    new_table_data = [record for record in table_data if record.get('id') != record_id]
+    
+    if len(new_table_data) == len(table_data):
+        logAction("deleteFromDb", f"Record with ID {record_id} not found in table '{table}'")
+        return False  # Запись не найдена
+    
+    data[table] = new_table_data
+    with open(db_filename, 'w') as db_file:
+        json.dump(data, db_file, indent=4)
+    
+    logAction("deleteFromDb", f"Deleted record with ID {record_id} from table '{table}'")
+    return True
