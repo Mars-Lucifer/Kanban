@@ -1,4 +1,200 @@
 {
-    "users": [],
-    "resumes": []
+    "users": [
+        {
+            "id": 1,
+            "name": "Mars",
+            "surname": "Lucifer",
+            "patronymic": "\u0421\u0442\u0430\u043d\u0438\u0441\u043b\u0430\u0432\u043e\u0432\u0438\u0447",
+            "email": "nikitarybalko897@gmail.com",
+            "password": "1234",
+            "verification": 1
+        }
+    ],
+    "resumes": [
+        {
+            "id": 1,
+            "photo": "/static/uploads/img/img.1",
+            "name": "\u041d\u0438\u043a\u0438\u0442\u0430",
+            "surname": "\u0420\u044b\u0431\u0430\u043b\u043a\u043e",
+            "patronymic": "\u0421\u0442\u0430\u043d\u0438\u0441\u043b\u0430\u0432\u043e\u0432\u0438\u0447",
+            "post": "\u0427\u0435\u043b\u043e\u0432\u0435\u043a",
+            "salary": "100000",
+            "experience": "20",
+            "dateBirth": "2009-11-11",
+            "telephone": "89955376981",
+            "email": "nikitarybalko897@gmail.com",
+            "tag": "[\"1\",\"2\",\"3\"]",
+            "education": "\u0428\u043a\u043e\u043b\u044c\u043d\u043e\u0435 \u043d\u0435\u043e\u043a\u043e\u043d\u0447\u0435\u043d\u043d\u043e\u0435",
+            "comment": "\u041d\u0430 \u0431\u043b\u0430\u0433\u043e \u0447\u0435\u043b\u043e\u0432\u0435\u0447\u0435\u0441\u0442\u0432\u0430",
+            "glass": 3,
+            "hr_fio": [
+                "Lucifer",
+                "Mars",
+                "\u0421\u0442\u0430\u043d\u0438\u0441\u043b\u0430\u0432\u043e\u0432\u0438\u0447"
+            ],
+            "creation_date": "2024-11-07 04:20:51",
+            "files": [
+                [
+                    1,
+                    "\u2661.jpg"
+                ],
+                [
+                    1,
+                    "-_lPa2-2R4o.jpg"
+                ],
+                [
+                    1,
+                    "1_3"
+                ]
+            ]
+        },
+        {
+            "id": 2,
+            "photo": "/static/uploads/img/img.2",
+            "name": "\u041d\u0438\u043a\u0438\u0442\u0430",
+            "surname": "\u0420\u044b\u0431\u0430\u043b\u043a\u043e",
+            "patronymic": "\u0421\u0442\u0430\u043d\u0438\u0441\u043b\u0430\u0432\u043e\u0432\u0438\u0447",
+            "post": "\u0427\u0435\u043b\u043e\u0432\u0435\u043a",
+            "salary": "100000",
+            "experience": "20",
+            "dateBirth": "0011-11-11",
+            "telephone": "89955376981",
+            "email": "nikitarybalko897@gmail.com",
+            "tag": "[\"11\"]",
+            "education": "\u0428\u043a\u043e\u043b\u044c\u043d\u043e\u0435 \u043d\u0435\u043e\u043a\u043e\u043d\u0447\u0435\u043d\u043d\u043e\u0435",
+            "comment": "3",
+            "glass": 2,
+            "hr_fio": [
+                "Lucifer",
+                "Mars",
+                "\u0421\u0442\u0430\u043d\u0438\u0441\u043b\u0430\u0432\u043e\u0432\u0438\u0447"
+            ],
+            "creation_date": "2024-11-07 04:41:18",
+            "files": [
+                [
+                    1,
+                    "static\\uploads\\img\\Dzvun9dvdk.jpg"
+                ],
+                [
+                    1,
+                    "static\\uploads\\img\\QX4HUQ2VO8.jpg"
+                ],
+                [
+                    1,
+                    "static\\uploads\\img\\QX4HUQ2VO8.jpg"
+                ]
+            ]
+        },
+        {
+            "id": 3,
+            "photo": "/static/uploads/img/img.3",
+            "name": "\u041b\u0435\u0441\u044f",
+            "surname": "\u041f\u0435\u0447\u0435\u0440\u043a\u0438\u043d\u0430",
+            "patronymic": "\u0410\u043b\u0435\u043a\u0441\u0430\u043d\u0434\u0440\u043e\u0432\u043d\u0430",
+            "post": "\u0427\u0435\u043b\u043e\u0432\u0435\u043a",
+            "salary": "100000",
+            "experience": "12",
+            "dateBirth": "5407-02-11",
+            "telephone": "89955376981",
+            "email": "nikitarybalko897@gmail.com",
+            "tag": "[\"12\",\"34\",\"90\"]",
+            "education": "\u0428\u043a\u043e\u043b\u044c\u043d\u043e\u0435 \u043d\u0435\u043e\u043a\u043e\u043d\u0447\u0435\u043d\u043d\u043e\u0435",
+            "comment": "\u041f\u0440\u043e\u0435\u043a\u0442 \u043d\u0430\u0445\u043e\u0434\u0438\u0442\u0441\u044f \u0432 \u0441\u0442\u0430\u0434\u0438\u0438 \u0440\u0430\u0437\u0440\u0430\u0431\u043e\u0442\u043a\u0438. \u0423\u0434\u043e\u0431\u043d\u043e\u0435 \u0441\u0440\u0435\u0434\u0441\u0442\u0432\u043e \u0441\u0432\u044f\u0437\u0438 - \u0442\u0435\u043b\u0435\u0433\u0440\u0430\u043c\u043c",
+            "glass": 3,
+            "hr_fio": [
+                "Lucifer",
+                "Mars",
+                "\u0421\u0442\u0430\u043d\u0438\u0441\u043b\u0430\u0432\u043e\u0432\u0438\u0447"
+            ],
+            "creation_date": "2024-11-07 04:55:18",
+            "files": [
+                [
+                    1,
+                    "static\\uploads\\img\\QX4HUQ2VO8.jpg"
+                ],
+                [
+                    1,
+                    "static\\uploads\\img\\3kuFCLz9P2Y.jpg"
+                ],
+                [
+                    1,
+                    "static\\uploads\\img\\QX4HUQ2VO8.jpg"
+                ]
+            ]
+        },
+        {
+            "id": 4,
+            "photo": "/static/uploads/img/img.4",
+            "name": "No",
+            "surname": "No",
+            "patronymic": "No",
+            "post": "No",
+            "salary": "3",
+            "experience": "3",
+            "dateBirth": "3333-03-31",
+            "telephone": "3333333333",
+            "email": "nikitarybalko333@gmail.com",
+            "tag": "[\"1\"]",
+            "education": "3",
+            "comment": "3",
+            "glass": 1,
+            "hr_fio": [
+                "Lucifer",
+                "Mars",
+                "\u0421\u0442\u0430\u043d\u0438\u0441\u043b\u0430\u0432\u043e\u0432\u0438\u0447"
+            ],
+            "creation_date": "2024-11-07 05:20:00",
+            "files": [
+                [
+                    1,
+                    "static\\uploads\\img\\-_lPa2-2R4o.jpg"
+                ],
+                [
+                    1,
+                    "static\\uploads\\img\\0RZWB5h4eefsHWhbDxUPVRI5u68nsvFFAua6ewOKyY8.jpg"
+                ],
+                [
+                    0,
+                    ""
+                ]
+            ]
+        },
+        {
+            "id": 5,
+            "photo": "/static/uploads/img/img.5",
+            "name": "\u041d\u0438\u043a\u0438\u0442\u0430",
+            "surname": "\u0420\u044b\u0431\u0430\u043b\u043a\u043e",
+            "patronymic": "\u0421\u0442\u0430\u043d\u0438\u0441\u043b\u0430\u0432\u043e\u0432\u0438\u0447",
+            "post": "\u0427\u0435\u043b\u043e\u0432\u0435\u043a",
+            "salary": "100000",
+            "experience": "20",
+            "dateBirth": "0011-11-01",
+            "telephone": "89955376981",
+            "email": "nikitarybalko897@gmail.com",
+            "tag": "[\"1\"]",
+            "education": "1",
+            "comment": "\u041f\u043e\u0434\u043f\u0438\u0441\u044b\u0432\u0430\u0439\u0442\u0435\u0441\u044c \u043d\u0430 \u043c\u0435\u043d\u044f=",
+            "glass": 1,
+            "hr_fio": [
+                "Lucifer",
+                "Mars",
+                "\u0421\u0442\u0430\u043d\u0438\u0441\u043b\u0430\u0432\u043e\u0432\u0438\u0447"
+            ],
+            "creation_date": "2024-11-07 07:25:11",
+            "files": [
+                [
+                    0,
+                    ""
+                ],
+                [
+                    0,
+                    ""
+                ],
+                [
+                    0,
+                    ""
+                ]
+            ]
+        }
+    ]
 }

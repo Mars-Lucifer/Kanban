@@ -6,29 +6,50 @@
     <title>{% block title %}Канбан{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
     <link rel="icon" href="{{ url_for('static', filename='icons/logo.png') }}" type="image/x-icon">
+    <noscript>
+        <div style="color: red; font-size: 20px; text-align: center;">
+            JavaScript is disabled in your browser. Please enable JavaScript to view this site properly.
+        </div>
+    </noscript>
 </head>
 <body>
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-        <div class="pop-up" id="popMain">
-            <div id="pop" class="pop-up__table">
-                <div class="pop-up__table__block">
-                    <h1>Здравствуйте</h1>
-                    <p class="gray-color">
-                        {% for message in messages %}
-                            {{ message }}
-                        {% endfor %}
-                    </p>
-                </div>
-                <div class="pop-up__table__btn-block">
-                    <a href="/signup" class="btn btn_blue w100">Регистрация</a>
-                    <a href="/signin" class="btn btn_gray w100">Вход</a>
+    <div class="pop-up" id="popNonMain" style="display: none;">
+        <div id="pop" class="pop-up__table">
+            <div class="pop-up__table__block">
+                <h1>Здравствуйте</h1>
+                <p class="gray-color">
+                    {% for message in messages %}
+                        {{ message }}
+                    {% endfor %}
+                </p>
+                <div id="popupButtonContainer">
+                    <a id="popup-button" href="" class="btn btn_gray">Перейти к записи</a>
                 </div>
             </div>
-            <button id="pop2" onclick="close_pop()" class="pop-up__close">
-                <img src="{{ url_for('static', filename='icons/close.svg') }}" alt="close">
-            </button>
         </div>
+        <button id="pop2" onclick="close_pop_2()" class="pop-up__close">
+            <img src="{{ url_for('static', filename='icons/close.svg') }}" alt="close">
+        </button>
+    </div>
+    
+    
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="pop-up" id="popMain">
+                <div id="pop" class="pop-up__table">
+                    <div class="pop-up__table__block">
+                        <h1>Здравствуйте</h1>
+                        <p class="gray-color">
+                            {% for message in messages %}
+                                {{ message }}
+                            {% endfor %}
+                        </p>
+                    </div>
+                </div>
+                <button id="pop2" onclick="close_pop()" class="pop-up__close">
+                    <img src="{{ url_for('static', filename='icons/close.svg') }}" alt="close">
+                </button>
+            </div>
         {% endif %}
     {% endwith %}
     
@@ -60,9 +81,9 @@
                     <span id="toggle-button">Свернуть</span>
                     <img id="toggle-arrow" src="/static/icons/arrow_cool_down.svg" alt="0">
                 </button>
-                <a href="" class="page active">
+                <a href="javascript:void(0);" class="page active" id="profile-name">
                     <img src="/static/icons/icon.svg" alt="Профиль">
-                    <span id="toggle-button">Анастасия К</span>
+                    <span id="toggle-button">{{ user_name }}</span>
                 </a>
             </div>
         </div>  
@@ -72,5 +93,7 @@
     {% block content %}{% endblock %}
     
     <script src="{{ url_for('static', filename='main.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/locale/ru.js"></script>
 </body>
 </html>

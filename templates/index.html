@@ -4,63 +4,114 @@
 
 {% block content %}
 <div class="kanban-container">
-    <div class="column">
-        <h4>Стакан резюме</h4>
-        <a href="/resume" class="card">
+    {% for column_id, column_name in kanban_columns.items() %}
+    <div class="column" data-column="{{ column_id }}" ondragover="allowDrop(event)" ondrop="drop(event)" ondragleave="dragLeave(event)">
+        <h4>{{ column_name }}</h4>
+        
+        {% for resume in resumes[column_id] %}
+        <a href="/resume/{{ resume.id }}" class="card" data-resume-id="{{ resume.id }}" draggable="true" ondragstart="drag(event)">
             <div class="text_and_img">
                 <div class="photo-card">
-                    <img src="/static/img/1.png" alt="">
+                    <img src="{{ resume.photo }}" alt="" draggable="false">
                 </div>
                 <div class="about_person">
-                   <h3>Иван <span class="gray-color">Иванович</span></h3>
-                    <p>Фронтенд разработчик</p> 
+                    <h3>{{ resume.name }} <span class="gray-color">{{ resume.surname }}</span></h3>
+                    <p>{{ resume.post }}</p> 
                 </div>
             </div>
             <div class="skills">
                 <div class="skill">
-                    <p>20 лет опыта</p>
+                    <p>{{ resume.experience }} лет опыта</p>
                 </div>
+                {% for skill in resume.tag %}
                 <div class="skill">
-                    <p>HTML</p>
+                    <p>{{ skill }}</p>
                 </div>
-                <div class="skill">
-                    <p>CSS</p>
-                </div>
-                <div class="skill">
-                    <p>JS</p>
-                </div>
+                {% endfor %}
             </div>
             <div class="inf_hr_history">
                 <img src="/static/icons/icon.svg" alt="">
-                <p class="gray-color">Виктор Викторович</p>
+                <p class="gray-color">{{ resume.hr_fio[1] }} {{ resume.hr_fio[2] }}</p>
             </div>
             <div class="inf_hr_history">
                 <img src="/static/icons/history.svg" alt="">
-                <p class="gray-color">3 дня назад</p>
+                <p class="gray-color">{{ resume.creation_date }}</p>
             </div>
         </a>
-        <div class="card">Петр Артурович<br>Backend разработчик</div>
-        <div class="card">Аня Сергеевна<br>Аналитик</div>
+        {% endfor %}
     </div>
-    <div class="column">
-        <h4>Теплый контакт</h4>
-        <div class="card">Евгений Михайлович<br>Ethnologist</div>
-    </div>
-    <div class="column">
-        <h4>Скрининг</h4>
-        <div class="card">Артур Артурович<br>UI/UX</div>
-    </div>
-    <div class="column">
-        <h4>Интервью</h4>
-        <div class="card">Петр Артурович<br>Digital marketing</div>
-    </div>
-    <div class="column">
-        <h4>Проверка СБ</h4>
-        <div class="card">Петр Артурович<br>Digital marketing</div>
-    </div>
-    <div class="column">
-        <h4>Оффер</h4>
-        <div class="card">Петр Артурович<br>Digital marketing</div>
-    </div>
+    {% endfor %}
 </div>
+
+<script>
+    function drop(event) {
+        event.preventDefault();
+        const resumeId = event.dataTransfer.getData("text");
+        const targetColumn = event.currentTarget.getAttribute("data-column");
+
+        // Убираем классы для правильной визуализации
+        const resumeCard = document.querySelector(`[data-resume-id="${resumeId}"]`);
+        if (resumeCard) {
+            resumeCard.classList.remove("dragging");
+        }
+        event.currentTarget.classList.remove("drag-over");
+        
+        // Перемещаем карточку в новую колонку
+        event.currentTarget.appendChild(resumeCard);
+
+        // Отправляем запрос на сервер для обновления данных
+        fetch("/move_resume", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                resume_id: resumeId,
+                new_column: targetColumn
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === "success" && data.message) {
+                // Показываем pop-up с сообщением и ссылкой
+                showPopUp(data.message, data.url); // Передаем URL в showPopUp
+            } else {
+                console.warn("Сообщение для pop-up отсутствует или статус не 'success'.");
+            }
+        })
+        .catch(error => {
+            console.error("Ошибка при перемещении резюме:", error);
+        });
+
+    }
+
+    // Обработчики событий для drag и drop
+    function allowDrop(event) {
+        event.preventDefault();
+        event.currentTarget.classList.add("drag-over");
+    }
+
+    function drag(event) {
+        event.dataTransfer.setData("text", event.target.getAttribute("data-resume-id"));
+        event.target.classList.add("dragging");
+    }
+
+    // Убираем эффект, когда карточка покидает зону перетаскивания
+    function dragLeave(event) {
+        event.currentTarget.classList.remove("drag-over");
+    }
+
+    // Добавляем события на все карточки и колонки
+    document.querySelectorAll(".card").forEach(card => {
+        card.addEventListener("dragstart", drag);
+        card.addEventListener("dragend", () => card.classList.remove("dragging"));
+    });
+
+    document.querySelectorAll(".column").forEach(column => {
+        column.addEventListener("dragover", allowDrop);
+        column.addEventListener("drop", drop);
+        column.addEventListener("dragleave", dragLeave);
+    });
+
+</script>
 {% endblock %}

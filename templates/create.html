@@ -3,54 +3,64 @@
 {% block title %}Страница создания резюме{% endblock %}
 
 {% block content %}
-<div class="right_block gray-color">
+<form method="POST" action="/create" enctype="multipart/form-data" class="right_block gray-color">
     <div class="candidate">
         <div class="text_and_img gap-32">
             <div class="resume-photo">
-                <img src="/static/img/1.png" alt="photo">
+                <!-- Поле для загрузки изображения -->
+                <input type="file" name="photo" id="photoInput" accept="image/*" onchange="previewImage(event)" style="display: none;">
+                <label for="photoInput">
+                    <img id="avatarPreview" src="/static/img/none_download.svg" alt="photo" class="avatar-preview" style="cursor: pointer;">
+                </label>
             </div>
-            <div class="about_person gap-8">
-                <input type="text" placeholder="ФИО" />
-                <input type="text" placeholder="Должность" />
-                <input type="text" placeholder="Ожидаемая ЗП" />
+            <div class="about_person gap-8 w100">
+                <div class="resume_inf_block">
+                    <input type="text" name="fio" placeholder="ФИО" required />
+                </div>
+                <div class="resume_inf_block">
+                    <input type="text" name="position" placeholder="Должность" required />
+                </div>
+                <div class="resume_inf_block">
+                    <input type="text" name="expected_salary" placeholder="Ожидаемая ЗП" required />
+                </div>
             </div>
         </div>
         <div class="info-block">
             <div class="info-pills">
                 <div class="resume_inf_block">
-                    <input type="text" placeholder="Лет опыта" />
+                    <input type="text" name="experience_years" placeholder="Лет опыта" required />
                 </div>
                 <div class="resume_inf_block">
-                    <input type="date" placeholder="Дата рождения" />
+                    <input type="date" name="birth_date" placeholder="Дата рождения" required />
                 </div>
             </div>
             <div class="info-pills">
                 <div class="resume_inf_block">
-                    <input type="tel" placeholder="Номер телефона" />
+                    <input type="tel" name="phone" placeholder="Номер телефона" required />
                 </div>
                 <div class="resume_inf_block">
-                    <input type="email" placeholder="Эл. почта" />
+                    <input type="email" name="email" placeholder="Эл. почта" required />
                 </div>
             </div>
         </div>
-        <div class="skills">
+        <div class="skills" id="skills">
             <div class="skill">
                 <img src="/static/icons/add.svg" alt="">
-                <input type="text" placeholder="Введите тег..." />
+                <input type="text" id="skillInput" placeholder="Введите тег..." />
             </div>
         </div>
         <div class="resume_inf_block">
             <img src="/static/icons/school.svg" alt="">
-            <input type="text" placeholder="Образование" />
+            <input type="text" name="education" placeholder="Образование" />
         </div>
         <div class="inf_hr_history resume_inf_block">
             <img src="/static/icons/chat.svg" alt="">
-            <input type="text" placeholder="Комментарий" />
+            <input type="text" name="comment" placeholder="Комментарий" />
         </div>
-        <a class="resume_inf_block bk-blue right" href="#">
-            <p>Создать резюме</p>
-            <img src="/static/icons/add_circle.svg" alt="">
-        </a>
+        <button type="submit" class="resume_inf_block bk-blue right">
+            Создать резюме
+            <img src="/static/icons/add_circle_w.svg" alt="">
+        </button>
     </div>
     
     <div class="files">
@@ -70,5 +80,64 @@
             </div>
         </div>
     </div>
-</div>
+</form>
+
+<script>
+    function previewImage(event) {
+        var file = event.target.files[0]; // Получаем первый выбранный файл
+        if (file) {
+            var reader = new FileReader();  // Создаём новый FileReader для считывания файла
+
+            reader.onload = function(e) {
+                // Обновляем источник изображения на URL, сгенерированный для выбранного файла
+                document.getElementById('avatarPreview').src = e.target.result;
+            }
+
+            reader.readAsDataURL(file);  // Читаем файл как Data URL
+        }
+    }
+
+    // Добавление тегов в список и их удаление
+    const skillInput = document.getElementById('skillInput');
+    const skillsList = document.getElementById('skills');
+    const skillsArray = [];
+
+    skillInput.addEventListener('keypress', function(event) {
+        if (event.key === 'Enter' && skillInput.value.trim() !== '') {
+            event.preventDefault();
+            const skill = skillInput.value.trim();
+
+            // Добавляем тег в массив
+            skillsArray.push(skill);
+
+            // Создаем блок с тегом
+            const skillBlock = document.createElement('div');
+            skillBlock.classList.add('skill');
+            skillBlock.classList.add('skill_del');
+            skillBlock.textContent = skill;
+
+            // Кнопка удаления
+            skillBlock.addEventListener('click', function() {
+                skillsArray.splice(skillsArray.indexOf(skill), 1); // Удаляем из массива
+                skillBlock.remove(); // Удаляем блок
+            });
+
+            skillsList.appendChild(skillBlock);
+
+            // Очищаем поле ввода
+            skillInput.value = '';
+        }
+    });
+
+    // Перед отправкой формы добавляем массив тегов в скрытое поле формы
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function() {
+        const skillsInput = document.createElement('input');
+        skillsInput.type = 'hidden';
+        skillsInput.name = 'skills';
+        skillsInput.value = JSON.stringify(skillsArray);
+        form.appendChild(skillsInput);
+    });
+</script>
+
 {% endblock %}

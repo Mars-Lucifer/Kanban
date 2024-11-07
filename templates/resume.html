@@ -7,109 +7,129 @@
         <div class="candidate">
             <div class="text_and_img gap-32">
                 <div class="resume-photo">
-                    <img src="/static/img/1.png" alt="photo">
+                    <img class="avatar-preview" src="{{ resume.photo }}" alt="photo">
                 </div>
                 <div class="about_person gap-8">
-                    <h1>Зубенко Иван Иванович</h1>
-                    <h3 class="blue-color">Фронтенд разработчик</h3>
-                    <h4>Ожидаемая ЗП: 100 000р</h4>
+                    <h1>{{ resume.surname }} {{ resume.name }} {{ resume.patronymic }}</h1>
+                    <h3 class="blue-color">{{ resume.post }}</h3>
+                    <h4>Ожидаемая ЗП: {{ resume.salary }}</h4>
                 </div>
             </div>
             <div class="info-block">
                 <div class="info-pills">
                     <div class="resume_inf_block bk-blue">
-                        <p>20 лет опыта</p>
+                        <p>{{ resume.experience }} лет опыта</p>
                     </div>
                     <div class="resume_inf_block bk-blue">
-                        <p>Родился 9 октября 1990 года</p>
+                        <p>{{ resume.dateBirth }}</p>
                     </div>
                 </div>
                 <div class="info-pills">
                     <div class="resume_inf_block">
                         <img src="/static/icons/call.svg" alt="telephone">
-                        <p>+7 (800) 555-35-35</p>
+                        <p>{{ resume.telephone }}</p>
                     </div>
                     <div class="resume_inf_block">
                         <img src="/static/icons/email.svg" alt="">
-                        <p>nonmail@gmail.com</p>
+                        <p>{{ resume.email }}</p>
                     </div>
                 </div>
             </div>
             <div class="skills">
-                <div class="skill">
-                    <p>HTML</p>
-                </div>
-                <div class="skill">
-                    <p>CSS</p>
-                </div>
-                <div class="skill">
-                    <p>JS</p>
-                </div>
-                <div class="skill">
-                    <p>React</p>
-                </div>
-                <div class="skill">
-                    <p>Next.JS</p>
-                </div>
-                <div class="skill">
-                    <p>Word</p>
-                </div>
-                <div class="skill">
-                    <p>Excel</p>
-                </div>
-            </div>
+                {% for skill in resume.tag %}
+                    <div class="skill">
+                        <p>{{ skill }}</p>
+                    </div>
+                {% endfor %}
+            </div>            
             <div class="education">
                 <img src="/static/icons/school.svg" alt="">
-                <p class="gray-color">Высший технологический университет Москвы</p>
+                <p class="gray-color">{{ resume.education }}</p>
             </div>
             <div class="inf_hr_history">
                 <img src="/static/icons/icon.svg" alt="">
-                <p class="gray-color">Виктор Викторович</p>
+                <p class="gray-color" title="{{ resume.hr_fio[0] }} {{ resume.hr_fio[1] }} {{ resume.hr_fio[2] }}">
+                    {{ resume.hr_fio[1] }} {{ resume.hr_fio[2] }}
+                </p>
             </div>
             <div class="inf_hr_history">
                 <img src="/static/icons/history.svg" alt="">
-                <p class="gray-color">3 дня назад</p>
+                <p class="gray-color" id="hr_time" data-time="{{ resume.creation_date }}" title="{{ resume.creation_date }}">
+                    {{ format_time }}
+                </p>
             </div>
-            <div class="inf_hr_history">
-                <img src="/static/icons/chat.svg" alt="">
-                <p class="gray-color">Зубенко Иван Иванович - опытный HR специалист с высоким уровнем профессионализма. Душевный человечек, пользуется спросом в других фирмах, очень хороший прентендент</p>
-            </div>
-            <a class="resume_inf_block gray-color right">
+            <a href="/resume/edit/{{ resume.id }}" class="resume_inf_block gray-color right">
                 <p>Редактировать</p>
                 <img src="/static/icons/edit.svg" alt="">
             </a>
         </div>
         <div class="files">
             <p class="h1">Файлы</p>
-            <div class="info-block">
-                <div class="info-pills">
-                    <div class="resume_inf_block">
-                        <img src="/static/icons/done.svg" alt="done">
-                        <p>Скрининг</p>
-                    </div>
-                    <div class="resume_inf_block attach">
-                        <p class="gray-color">Прикрепить</p>
-                    </div>
+            <form method="POST" action="{{ url_for('resume', resume_id=resume.id) }}" enctype="multipart/form-data">
+                <div class="info-block">
+                    {% for i in range(1, 4) %}
+                        <div class="info-pills">
+                            <div class="resume_inf_block">
+                                {% if resume.files[i-1][0] == 0 %}
+                                    <div class="circle circle_gray"></div>
+                                {% else %}
+                                    <div class="circle circle_blue"></div>
+                                {% endif %}
+                                
+                                <p>
+                                    {% if i == 1 %}
+                                        Скрининг
+                                    {% elif i == 2 %}
+                                        Результат собеседования
+                                    {% elif i == 3 %}
+                                        Оффер
+                                    {% endif %}
+                                </p>
+                                <img src="/static/icons/download.svg" alt="download">
+                            </div>
+                            <div class="resume_inf_block attach">
+                                {% if resume.files[i-1][0] == 0 %}
+                                    <input type="file" name="file_{{ i }}" id="file_{{ i }}" onchange="updateButtonText({{ i }})" style="display: none;">
+                                    <button type="button" id="button_{{ i }}" class="gray-color" onclick="document.getElementById('file_{{ i }}').click();">Выбрать</button>
+                                    <button type="submit" id="button_{{ i }}_2" class="gray-color" style="display: none;">Прикрепить</button>
+                                {% else %}
+                                    <a href="../{{ resume.files[i-1][1] }}" target="_blank" class="blue-color">Открыть файл</a>
+                                {% endif %}
+                                <img src="/static/icons/upload.svg" alt="upload">
+                            </div>
+                        </div>
+                    {% endfor %}
                 </div>
-                <div class="info-pills">
-                    <div class="resume_inf_block">
-                        <img src="/static/icons/done.svg" alt="done">
-                        <p>Результат собеседования</p>
-                    </div>
-                    <div class="resume_inf_block attach">
-                        <p class="gray-color">Прикрепить</p>
-                    </div>
-                </div>
-                <div class="info-pills">
-                    <div class="resume_inf_block">
-                        <img src="/static/icons/notdone.svg" alt="notdone">
-                        <p>Оффер</p>
-                    </div>
-                    <div class="resume_inf_block attach bk-blue">
-                        <p>Прикрепить</p>
-                    </div>
-                </div>
-            </div>
+            </form>
         </div>
     </div>
+
+    <script>
+        // Функция, которая будет форматировать время
+        document.addEventListener('DOMContentLoaded', function () {
+            const timeElements = document.querySelectorAll('#hr_time');
+    
+            timeElements.forEach(element => {
+                const time = element.getAttribute('data-time'); // Дата в атрибуте
+                const formattedTime = moment(time).fromNow(); // Форматируем время в "час назад", "два дня назад"
+    
+                element.innerText = formattedTime; // Показываем отформатированное время
+            });
+        });
+
+        // Функция для изменения текста кнопки
+        function updateButtonText(i) {
+            const fileInput = document.getElementById(`file_${i}`);
+            const button = document.getElementById(`button_${i}`);
+            const button2 = document.getElementById(`button_${i}_2`);
+
+            if (fileInput.files.length > 0) {
+                button.style.display = 'none';
+                button2.style.display = 'block';
+            } else {
+                button2.style.display = 'none';
+                button.style.display = 'block';
+            }
+        }
+    </script>
 {% endblock %}

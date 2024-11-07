@@ -4,12 +4,12 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: "Manrope", sans-serif;
 }
 
 body {
-    font-family: "Manrope", sans-serif;    
     display: flex;
-    background-color: #EDEDF2;
+    background-color: #F2F4F7;
     width: 100%;
     height: 100%;
     min-height: 100svh;
@@ -17,6 +17,7 @@ body {
 }
 
 a, button {
+    font-size: 16px;
     text-decoration: none;
     cursor: pointer;
     text-wrap: nowrap;
@@ -124,7 +125,6 @@ h3 {
     overflow-x: auto;
     padding: 24px;
     gap: 12px;
-    background-color: #F7F9FC;
 }
 
 .column {
@@ -162,17 +162,42 @@ h3 {
     gap: 8px;
 }
 
+input[type="date"] {
+    color: #AFB6C7;
+    -webkit-appearance: none;  /* Убираем иконку в WebKit-браузерах */
+    -moz-appearance: textfield;  /* Убираем иконку в Firefox */
+    appearance: none; /* Стандартное поведение */
+    background: none; /* Убираем стандартный фон */
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    color: #AFB6C7;
+    display: none;  /* Убираем иконку в Chrome, Safari */
+}
+
 .skills {
     display: flex;
     gap: 4px;
+    align-items: center;
+    flex-wrap: wrap;
 }
 
 .skill {
     display: flex;
-    padding: 6px 14px;
+    padding: 10px 18px;
     gap: 10px;
     border-radius: 100px;
     background-color: #F7F9FC;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.skill_del {
+    cursor: pointer;
+}
+
+.skill_del:hover {
+    background-color: #FA3246;
+    color: #F7F9FC;
 }
 
 .inf_hr_history {
@@ -209,9 +234,10 @@ h3 {
 }
 
 .photo-card {
-    border-radius: 4px;
+    border-radius: 14px;
     height: 62px;
     aspect-ratio: 1;
+    overflow: hidden;
 }
 
 .resume-photo img, .photo-card img {
@@ -240,6 +266,14 @@ h3 {
     width: 100%;
 }
 
+.resume_inf_block input {
+    width: 100%;
+}
+
+form .resume_inf_block img {
+    margin-left: auto;
+}
+
 .bk-blue{
     background-color: #1964FA;
     color: #F7F9FC;
@@ -258,10 +292,10 @@ h3 {
     display: flex;
     flex-direction: column;
     width: 100%;
-    max-height: 325px;
     gap: 24px;
     padding: 26px;
     border-radius: 32px;
+    height: max-content;
 }
 
 .file {
@@ -287,7 +321,7 @@ input {
     border: none;
     background-color: #F7F9FC;
     font-size: 16px;
-    color: #AFB6C7;
+    color: #0C1D3D;
     outline: none;
     font-weight: 600;
 }
@@ -415,4 +449,106 @@ input::placeholder {
 
 .w100 {
     width: 100%;
+}
+
+.avatar-preview {
+    height: 200px;
+    aspect-ratio: 1;
+    overflow: hidden;
+    border-radius: 12px;
+}
+
+.circle {
+    height: 12px;
+    aspect-ratio: 1;
+    border-radius: 100px;
+}
+
+.circle_blue {
+    background-color: #1964FA;
+}
+
+.circle_gray {
+    background-color: #BDC6DB;
+}
+
+.attach {
+    display: flex;
+    gap: 12px;
+    background-color: #1964FA;
+}
+
+.attach button, .attach a {
+    background: none;
+    color: #F7F9FC;
+    align-items: flex-start;
+    text-align: start;
+}
+
+.card {
+    position: relative;
+    overflow: hidden;
+    background-color: #fff; /* Обычный белый фон */
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Плавный переход цвета */
+}
+
+/* Псевдоэлемент занимает всю карточку */
+.card::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: calc(100% - 4px);
+    height: calc(100% - 4px);
+    background-color: #F5F8FC; /* Синий цвет */
+    opacity: 0; /* По умолчанию невидим */
+    transition: opacity 0.4s ease, border 0.4s ease; /* Плавный переход для появления */
+    border: 0px solid #fff;
+    border-radius: 24px;
+}
+
+/* При перемещении карточки */
+.card.dragging::after {
+    opacity: 1; /* Прозрачный синий фон при перетаскивании */
+    border-width: 2px;
+}
+
+.card.dragging {
+    transform: scale(0.95);
+    z-index: 10; /* Поднимаем карточку на передний план */
+}
+
+
+.card.dragging {
+    opacity: 0.5;
+}
+
+.column {
+    position: relative;
+    overflow: hidden;
+    transition: border-radius 0.4s ease;
+}
+
+.column::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, #F5F8FC00 0%, #F5F8FC 100%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    border-radius: 0 0 24px 24px;
+    z-index: 0;
+}
+
+.column.drag-over::after {
+    opacity: 1;
+}
+
+.column .card {
+    position: relative;
+    z-index: 1;
 }

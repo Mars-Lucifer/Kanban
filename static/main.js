@@ -52,7 +52,32 @@ function close_pop() {
   popMain.classList.add("pop-up-main_close");
 }
 
-// Функция для закрытия pop-up
-function close_pop() {
-  document.getElementById("popMain").style.display = "none";
+function close_pop_2() {
+  const popUpElement = document.getElementById('popNonMain');
+  popUpElement.style.display = 'none';
 }
+
+function showPopUp(message, url) {
+  const popUpElement = document.getElementById('popNonMain');
+  const popupButton = document.getElementById('popup-button');
+  popUpElement.style.display = 'flex';
+  document.querySelector('.pop-up .gray-color').textContent = message;
+  popupButton.href = url; // Устанавливаем href кнопки
+}
+
+
+// Функция выхода из аккаунта
+document.addEventListener("DOMContentLoaded", function() {
+  const profileName = document.getElementById("profile-name");
+  const userNameSpan = profileName.querySelector("span");
+
+  profileName.addEventListener("click", function() {
+      const userName = userNameSpan.textContent;
+      const logoutConfirmed = confirm(`Вы хотите выйти из аккаунта, ${userName}?`);
+      
+      if (logoutConfirmed) {
+          // Перенаправляем на URL выхода
+          window.location.href = '/logout';
+      }
+  });
+});

@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+
+{% block title %}Редактирование Резюме{% endblock %}
+
+{% block content %}
+    <div class="right_block">
+        <div class="candidate">
+            <h1>Редактирование Резюме</h1>
+            <form method="POST" enctype="multipart/form-data">
+                <div>
+                    <label for="name">Имя:</label>
+                    <input type="text" id="name" name="name" value="{{ resume.name }}">
+                </div>
+                <div>
+                    <label for="surname">Фамилия:</label>
+                    <input type="text" id="surname" name="surname" value="{{ resume.surname }}">
+                </div>
+                <div>
+                    <label for="patronymic">Отчество:</label>
+                    <input type="text" id="patronymic" name="patronymic" value="{{ resume.patronymic }}">
+                </div>
+                <div>
+                    <label for="post">Должность:</label>
+                    <input type="text" id="post" name="post" value="{{ resume.post }}">
+                </div>
+                <div>
+                    <label for="salary">Зарплата:</label>
+                    <input type="number" id="salary" name="salary" value="{{ resume.salary }}">
+                </div>
+                <div>
+                    <label for="experience">Опыт:</label>
+                    <input type="number" id="experience" name="experience" value="{{ resume.experience }}">
+                </div>
+                <div>
+                    <label for="education">Образование:</label>
+                    <input type="text" id="education" name="education" value="{{ resume.education }}">
+                </div>
+                <div>
+                    <label for="comment">Комментарий:</label>
+                    <textarea id="comment" name="comment">{{ resume.comment }}</textarea>
+                </div>
+                <div>
+                    <label for="dateBirth">Дата рождения:</label>
+                    <input type="date" id="dateBirth" name="dateBirth" value="{{ resume.dateBirth }}">
+                </div>
+                <div>
+                    <label for="telephone">Телефон:</label>
+                    <input type="text" id="telephone" name="telephone" value="{{ resume.telephone }}">
+                </div>
+                <div>
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" value="{{ resume.email }}">
+                </div>
+
+                <button type="submit">Сохранить изменения</button>
+            </form>
+        </div>
+
+        <div class="files">
+            <p class="h1">Файлы</p>
+            <form method="POST" action="{{ url_for('resume', resume_id=resume.id) }}" enctype="multipart/form-data">
+                <div class="info-block">
+                    {% for i in range(1, 4) %}
+                        <div class="info-pills">
+                            <div class="resume_inf_block">
+                                {% if resume.files[i-1][0] == 0 %}
+                                    <div class="circle circle_gray"></div>
+                                {% else %}
+                                    <div class="circle circle_blue"></div>
+                                {% endif %}
+                                
+                                <p>
+                                    {% if i == 1 %}
+                                        Скрининг
+                                    {% elif i == 2 %}
+                                        Результат собеседования
+                                    {% elif i == 3 %}
+                                        Оффер
+                                    {% endif %}
+                                </p>
+                                <img src="/static/icons/download.svg" alt="download">
+                            </div>
+                            <div class="resume_inf_block attach">
+                                {% if resume.files[i-1][0] == 0 %}
+                                    <input type="file" name="file_{{ i }}" id="file_{{ i }}" onchange="updateButtonText({{ i }})" style="display: none;">
+                                    <button type="button" id="button_{{ i }}" class="gray-color" onclick="document.getElementById('file_{{ i }}').click();">Выбрать</button>
+                                    <button type="submit" id="button_{{ i }}_2" class="gray-color" style="display: none;">Прикрепить</button>
+                                {% else %}
+                                    <a href="../{{ resume.files[i-1][1] }}" target="_blank" class="blue-color">Открыть файл</a>
+                                {% endif %}
+                                <img src="/static/icons/upload.svg" alt="upload">
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Функция для изменения текста кнопки
+        function updateButtonText(i) {
+            const fileInput = document.getElementById(`file_${i}`);
+            const button = document.getElementById(`button_${i}`);
+            const button2 = document.getElementById(`button_${i}_2`);
+
+            if (fileInput.files.length > 0) {
+                button.style.display = 'none';
+                button2.style.display = 'block';
+            } else {
+                button2.style.display = 'none';
+                button.style.display = 'block';
+            }
+        }
+    </script>
+{% endblock %}
