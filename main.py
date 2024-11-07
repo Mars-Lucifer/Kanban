@@ -36,12 +36,15 @@ def check_authentication():
     user_cookie = request.cookies.get('user_id')
 
     # 1. Проверка: Есть ли cookie у пользователя
-    if not user_cookie:
+    if user_cookie:
         flash("Пожалуйста, зарегистрируйтесь для доступа.")
         return redirect(url_for('signup'))
 
     # Преобразуем user_id в int, так как он будет храниться как строка
     user_id = int(user_cookie)
+    # 2. Проверка аккаунта в cookie (здесь заглушка)
+    account_exists = True  # допустим, аккаунт в базе данных есть
+    account_verified = True  # допустим, аккаунт не верифицирован
 
     # 2. Проверка аккаунта в базе данных
     user = readFromDb('users', user_id)
