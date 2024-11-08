@@ -58,14 +58,16 @@
                     {{ format_time }}
                 </p>
             </div>
-            <a href="/resume/edit/{{ resume.id }}" class="resume_inf_block gray-color right">
-                <p>Редактировать</p>
-                <img src="/static/icons/edit.svg" alt="">
-            </a>
-            {% if resume.glass == 6 %}
-                <button class="resume_inf_block right btn" onclick="confirmProject(event, {{ resume.id }})">Вывести на проект</button>
-            {% endif %}
-            <button class="resume_inf_block right btn btn_red" onclick="confirmProject(event, {{ resume.id }})">Удалить резюме</button>
+            <div class="info-pills">
+                <a href="/resume/edit/{{ resume.id }}" class="w100 resume_inf_block gray-color right">
+                    <p>Редактировать</p>
+                    <img src="/static/icons/edit.svg" alt="">
+                </a>
+                {% if resume.glass == 6 %}
+                    <button class="w100 resume_inf_block right btn" onclick="confirmProject(event, {{ resume.id }})">Вывести на проект</button>
+                {% endif %}
+                <button class="w100 resume_inf_block right btn btn_red" onclick="confirmProject(event, {{ resume.id }})">Удалить резюме</button>
+            </div>
         </div>
         <div class="files">
             <p class="h1">Файлы</p>

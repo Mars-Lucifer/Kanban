@@ -40,6 +40,7 @@ p {
 h1, .h1 {
     font-size: 40px;
     font-weight: 800;
+    text-wrap: nowrap;
 }
 
 h4 {
@@ -219,6 +220,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .candidate {
     width: 100%;
+    height: max-content;
     background-color: #FFFFFF;
     display: flex;
     flex-direction: column;
@@ -324,10 +326,20 @@ input {
     color: #0C1D3D;
     outline: none;
     font-weight: 600;
+    text-wrap: nowrap;
 }
 
 input::placeholder {
     color: #AFB6C7;
+}
+
+.bk-black {
+    background-color: #0C1D3D;
+    color: #F7F9FC;
+}
+
+.bk-white {
+    background-color: #FFFFFF;
 }
 
 .pop-up {

@@ -3,14 +3,44 @@
 {% block title %}Страница входа{% endblock %}
 
 {% block content %}
-<h1>Страница входа</h1>
-<form action="{{ url_for('signin') }}" method="post" style="display: flex; flex-direction: column; gap: 8px;">
-    <label for="email">Email:</label>
-    <input type="email" id="email" name="email" required>
-
-    <label for="password">Пароль:</label>
-    <input type="password" id="password" name="password" required>
-
-    <button type="submit">Войти</button>
-</form>
+<div class="right_block">
+    <form class="candidate" action="{{ url_for('signin') }}" method="post" style="display: flex; flex-direction: column; gap: 24px;">
+        <div class="info-pills">
+            <h1>Вход в аккаунт</h1>
+            <a href="/signup" class="resume_inf_block bk-black">Зарегестрироваться</a>
+        </div>
+        <div class="info-pills">
+            <div class="gray-color resume_inf_block">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="gray-color resume_inf_block">
+                <label for="password">Пароль:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+        </div>    
+        <button class="resume_inf_block bk-blue right" type="submit">Войти в аккаунт</button>
+    </form>
+    <div class="files">
+        <p class="h1 black-color">Информация</p>
+        <div class="info-block">
+            <div class="advice gray-color">
+                <img src="/static/icons/info.svg" alt="">
+                <p>Для доступа к сайту необходимо войти в аккаунт HR-а.</p>
+            </div>
+            <div class="advice gray-color">
+                <img src="/static/icons/info.svg" alt="">
+                <p>Верификация подтверждает вашу принадлежность к компании Технологии Надежности и разрешает использовать этот сервис.</p>
+            </div>
+            <div class="advice gray-color">
+                <img src="/static/icons/info.svg" alt="">
+                <p>После регистрации мы проверим ваши данные. Если все в порядке, мы верифицируем ваш аккаунт. После этого вы сможете войти на сайт и использовать канбан-доску.</p>
+            </div>
+            <div class="advice gray-color">
+                <img src="/static/icons/info.svg" alt="">
+                <p>Аккаунты, не прошедшие верификацию, будут заблокированы.</p>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

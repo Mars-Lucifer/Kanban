@@ -5,7 +5,6 @@
 {% block content %}
     <div class="right_block">
         <div class="candidate">
-            <h1>Редактирование Резюме</h1>
             <form method="POST" enctype="multipart/form-data">
                 <div>
                     <label for="name">Имя:</label>
@@ -27,9 +26,27 @@
                     <label for="salary">Зарплата:</label>
                     <input type="number" id="salary" name="salary" value="{{ resume.salary }}">
                 </div>
-                <div>
-                    <label for="experience">Опыт:</label>
-                    <input type="number" id="experience" name="experience" value="{{ resume.experience }}">
+                <div class="info-block">
+                    <div class="info-pills">
+                        <div class="resume_inf_block">
+                            <label for="experience">Опыт:</label>
+                            <input type="number" id="experience" name="experience" value="{{ resume.experience }}">
+                        </div>
+                        <div class="resume_inf_block">
+                            <label for="dateBirth">Дата рождения:</label>
+                            <input type="date" id="dateBirth" name="dateBirth" value="{{ resume.dateBirth }}">
+                        </div>
+                    </div>
+                    <div class="info-pills">
+                        <div class="resume_inf_block">
+                            <label for="telephone">Телефон:</label>
+                            <input type="text" id="telephone" name="telephone" value="{{ resume.telephone }}">
+                        </div>
+                        <div class="resume_inf_block">
+                            <label for="email">Email:</label>
+                            <input type="email" id="email" name="email" value="{{ resume.email }}">
+                        </div>
+                    </div>
                 </div>
                 <div>
                     <label for="education">Образование:</label>
@@ -38,18 +55,6 @@
                 <div>
                     <label for="comment">Комментарий:</label>
                     <textarea id="comment" name="comment">{{ resume.comment }}</textarea>
-                </div>
-                <div>
-                    <label for="dateBirth">Дата рождения:</label>
-                    <input type="date" id="dateBirth" name="dateBirth" value="{{ resume.dateBirth }}">
-                </div>
-                <div>
-                    <label for="telephone">Телефон:</label>
-                    <input type="text" id="telephone" name="telephone" value="{{ resume.telephone }}">
-                </div>
-                <div>
-                    <label for="email">Email:</label>
-                    <input type="email" id="email" name="email" value="{{ resume.email }}">
                 </div>
 
                 <button type="submit">Сохранить изменения</button>
