@@ -4,62 +4,72 @@
 
 {% block content %}
     <div class="right_block">
-        <div class="candidate">
-            <form method="POST" enctype="multipart/form-data">
-                <div>
-                    <label for="name">Имя:</label>
-                    <input type="text" id="name" name="name" value="{{ resume.name }}">
+        <form class="candidate" method="POST" enctype="multipart/form-data">
+            <div class="text_and_img gap-32">
+                <div class="resume-photo">
+                    <!-- Поле для загрузки изображения -->
+                    <input type="file" name="photo" id="photoInput" accept="image/*" onchange="previewImage(event)" style="display: none;">
+                    <label for="photoInput">
+                        <img id="avatarPreview" src="/static/img/none_download.svg" alt="photo" class="avatar-preview" style="cursor: pointer;">
+                    </label>
                 </div>
-                <div>
-                    <label for="surname">Фамилия:</label>
-                    <input type="text" id="surname" name="surname" value="{{ resume.surname }}">
+                <div class="info-pills column-flex">
+                    <div class="resume_inf_block gray-color">
+                        <label for="name">Имя:</label>
+                        <input type="text" id="name" name="name" value="{{ resume.name }}">
+                    </div>
+                    <div class="resume_inf_block gray-color">
+                        <label for="surname">Фамилия:</label>
+                        <input type="text" id="surname" name="surname" value="{{ resume.surname }}">
+                    </div>
+                    <div class="resume_inf_block gray-color">
+                        <label for="patronymic">Отчество:</label>
+                        <input type="text" id="patronymic" name="patronymic" value="{{ resume.patronymic }}">
+                    </div>
                 </div>
-                <div>
-                    <label for="patronymic">Отчество:</label>
-                    <input type="text" id="patronymic" name="patronymic" value="{{ resume.patronymic }}">
-                </div>
-                <div>
+            </div>
+            <div class="info-block">
+                <div class="resume_inf_block gray-color">
                     <label for="post">Должность:</label>
                     <input type="text" id="post" name="post" value="{{ resume.post }}">
                 </div>
-                <div>
+                <div class="resume_inf_block gray-color">
                     <label for="salary">Зарплата:</label>
                     <input type="number" id="salary" name="salary" value="{{ resume.salary }}">
                 </div>
-                <div class="info-block">
-                    <div class="info-pills">
-                        <div class="resume_inf_block">
-                            <label for="experience">Опыт:</label>
-                            <input type="number" id="experience" name="experience" value="{{ resume.experience }}">
-                        </div>
-                        <div class="resume_inf_block">
-                            <label for="dateBirth">Дата рождения:</label>
-                            <input type="date" id="dateBirth" name="dateBirth" value="{{ resume.dateBirth }}">
-                        </div>
+                <div class="info-pills">
+                    <div class="resume_inf_block">
+                        <label for="experience">Опыт:</label>
+                        <input type="number" id="experience" name="experience" value="{{ resume.experience }}">
                     </div>
-                    <div class="info-pills">
-                        <div class="resume_inf_block">
-                            <label for="telephone">Телефон:</label>
-                            <input type="text" id="telephone" name="telephone" value="{{ resume.telephone }}">
-                        </div>
-                        <div class="resume_inf_block">
-                            <label for="email">Email:</label>
-                            <input type="email" id="email" name="email" value="{{ resume.email }}">
-                        </div>
+                    <div class="resume_inf_block">
+                        <label for="dateBirth">Дата рождения:</label>
+                        <input type="date" id="dateBirth" name="dateBirth" value="{{ resume.dateBirth }}">
                     </div>
                 </div>
-                <div>
-                    <label for="education">Образование:</label>
-                    <input type="text" id="education" name="education" value="{{ resume.education }}">
+                <div class="info-pills">
+                    <div class="resume_inf_block">
+                        <label for="telephone">Телефон:</label>
+                        <input type="text" id="telephone" name="telephone" value="{{ resume.telephone }}">
+                    </div>
+                    <div class="resume_inf_block">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" name="email" value="{{ resume.email }}">
+                    </div>
                 </div>
-                <div>
-                    <label for="comment">Комментарий:</label>
-                    <textarea id="comment" name="comment">{{ resume.comment }}</textarea>
-                </div>
+            </div>
+            
+            <div>
+                <label for="education">Образование:</label>
+                <input type="text" id="education" name="education" value="{{ resume.education }}">
+            </div>
+            <div>
+                <label for="comment">Комментарий:</label>
+                <textarea id="comment" name="comment">{{ resume.comment }}</textarea>
+            </div>
 
-                <button type="submit">Сохранить изменения</button>
-            </form>
-        </div>
+            <button type="submit">Сохранить изменения</button>
+        </form>
 
         <div class="files">
             <p class="h1">Файлы</p>

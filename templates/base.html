@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Канбан{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
     <link rel="icon" href="{{ url_for('static', filename='icons/logo.png') }}" type="image/x-icon">
     <noscript>
         <div style="color: red; font-size: 20px; text-align: center;">
@@ -52,47 +53,45 @@
             </div>
         {% endif %}
     {% endwith %}
-    
     <div class="sidebar__space">
-        <div class="sidebar" id="sidebar">  
+        <div class="sidebar" id="sidebar">
             <div class="top">
                 <div class="datetime" id="datetime">
-                    <img src="/static/icons/logo.svg" alt="Логотип" class="logo" style="display: none;">
+                    <img src="/static/icons/logo.svg" alt="Логотип" class="logo">
                     <time id="currentTime" class="h1" style="font-variant-numeric: tabular-nums;"></time>
                     <div class="date">
                         <p id="currentDate" class="current-date gray-color"></p>
                     </div>
                 </div>
-                <a href="/" class="{% if request.path == '/' %}active{% endif %} page gray-color">
+                <a href="/" class="{% if request.path == '/' %}active{% endif %} page gray-color dymanic" >
                     <img src="/static/icons/note_stack.svg" alt="Канбан доска">
-                    <span id="toggle-button">Канбан-доска</span>
+                    <span>Канбан-доска</span>
                 </a>
-                <a href="/create" class="{% if request.path == '/create' %}active{% endif %} page gray-color">
+                <a href="/create" class="{% if request.path == '/create' %}active{% endif %} page gray-color dymanic">
                     <img src="/static/icons/add_circle.svg" alt="Создание записей">
-                    <span id="toggle-button">Создание записей</span>
-                </a>
-                <a href="/info" class="{% if request.path == '/info' %}active{% endif %} page gray-color">
-                    <img src="/static/icons/help.svg" alt="Информация">
-                    <span id="toggle-button">Информация</span>
+                    <span>Создание записей</span>
                 </a>
             </div>
             <div class="bottom">
-                <button class="page active active_roll" onclick="toggleSidebar()">
-                    <span id="toggle-button">Свернуть</span>
+                <button class="page  active_roll" id="toggle_active_roll">
+                    <span>Свернуть</span>
                     <img id="toggle-arrow" src="/static/icons/arrow_cool_down.svg" alt="0">
                 </button>
-                <a href="javascript:void(0);" class="page active" id="profile-name">
+                <a href="javascript:void(0);" class="page active_roll" id="profile-name">
                     <img src="/static/icons/icon.svg" alt="Профиль">
-                    <span id="toggle-button">{{ user_name }}</span>
+                    <span>{{ user_name }}</span>
                 </a>
             </div>
-        </div>  
-    </div>  
+        </div>
+    </div>
+    
+    
 
     <!-- Контент -->
     {% block content %}{% endblock %}
-    
+    <script src="https://code.jquery.com/jquery-3.7.1.slim.js" integrity="sha256-UgvvN8vBkgO0luPSUl2s8TIlOSYRoGFAX4jlCIm9Adc=" crossorigin="anonymous"></script>
     <script src="{{ url_for('static', filename='main.js') }}"></script>
+    <script src="{{ url_for('static', filename='menu.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/locale/ru.js"></script>
 </body>

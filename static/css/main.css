@@ -63,6 +63,7 @@ h3 {
     justify-content: space-between;
     height: 100svh;
     width: auto;
+    transition: width 0.3s;
 }
 
 .sidebar__space {
@@ -97,11 +98,12 @@ h3 {
 }
 
 .page{
+    width: 100%;
     display: flex;
     align-items: center;
     border-radius: 16px;
     padding: 14px 18px;
-    gap: 12px;
+    gap: 8px;
 }
 
 .bottom {
@@ -114,6 +116,13 @@ h3 {
 
 /* ВОПРОС */
 .active {
+    background-color: #F7F9FC; /* Цвет для выделенной ссылки */
+    color: #0C1D3D; /* Цвет текста */
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.active_roll {
     background-color: #F7F9FC; /* Цвет для выделенной ссылки */
     color: #0C1D3D; /* Цвет текста */
     font-size: 16px;
@@ -308,6 +317,8 @@ form .resume_inf_block img {
 .right {
     margin: 0 0 0 auto;
     width: auto;
+    display: flex;
+    justify-content: space-between;
 }
 
 .black-color {
@@ -331,6 +342,11 @@ input {
 
 input::placeholder {
     color: #AFB6C7;
+}
+
+.column-flex {
+    display: flex;
+    flex-direction: column;
 }
 
 .bk-black {
@@ -567,4 +583,60 @@ input::placeholder {
 .column .card {
     position: relative;
     z-index: 1;
+}
+
+
+
+
+
+sidebar.collapsed {
+    width: 120px;
+    align-items: center;
+}
+
+.sidebar .page {
+    display: flex;
+    align-items: center;
+    transition: padding 0.3s;
+    width: 100%;
+}
+
+.sidebar.collapsed .page {
+    justify-content: center;
+}
+
+.sidebar .page img {
+    margin-right: 10px;
+    transition: margin 0.3s;
+}
+
+.sidebar.collapsed .page img {
+    margin: 0;
+}
+
+.sidebar .page span {
+    transition: opacity 0.3s;
+}
+
+.sidebar.collapsed .page span,
+.sidebar.collapsed .datetime .date,
+.sidebar.collapsed .datetime time {
+    display: none;
+}
+
+.datetime .logo {
+    display: none;
+    margin: 0 auto;
+}
+
+.sidebar.collapsed .datetime .logo {
+    display: block;
+}
+
+
+
+.kanban-container {
+    flex-grow: 1;
+    transition: margin-left 0.3s;
+    margin-left: 0; 
 }

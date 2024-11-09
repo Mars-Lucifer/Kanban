@@ -58,6 +58,10 @@
                     {{ format_time }}
                 </p>
             </div>
+            <div class="inf_hr_history">
+                <img src="/static/icons/chat.svg" alt="">
+                <p class="gray-color">{{ resume.comment }}</p>
+            </div>
             <div class="info-pills">
                 <a href="/resume/edit/{{ resume.id }}" class="w100 resume_inf_block gray-color right">
                     <p>Редактировать</p>
@@ -66,7 +70,7 @@
                 {% if resume.glass == 6 %}
                     <button class="w100 resume_inf_block right btn" onclick="confirmProject(event, {{ resume.id }})">Вывести на проект</button>
                 {% endif %}
-                <button class="w100 resume_inf_block right btn btn_red" onclick="confirmProject(event, {{ resume.id }})">Удалить резюме</button>
+                    <button class="w100 resume_inf_block right btn btn_red" onclick="confirmProject(event, {{ resume.id }})">Удалить резюме</button>
             </div>
         </div>
         <div class="files">
