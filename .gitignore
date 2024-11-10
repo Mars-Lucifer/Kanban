@@ -11,3 +11,7 @@ venv/
 env/
 
 .env
+
+
+/static/uploads/img/*
+/static/uploads/files/*
