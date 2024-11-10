@@ -41,6 +41,7 @@ function updateParentWidth() {
 // Вызов при загрузке и обновлении
 updateParentWidth();
 window.addEventListener('resize', updateParentWidth);
+window.addEventListener('DOMContentLoaded', updateParentWidth);
 
 
 function close_pop() {

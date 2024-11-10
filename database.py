@@ -85,7 +85,7 @@ def addUser(user_id, name, surname, patronymic, email, password):
         "patronymic": patronymic,
         "email": email,
         "password": password,
-        "verification": 0
+        "verification": 1
     }
     writeToDb('users', new_user)
 
