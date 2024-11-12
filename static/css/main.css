@@ -356,8 +356,8 @@ textarea {
     background-color: #f7f9fc;
     overflow: auto;
     resize: none;
-    box-sizing: border-box;
-    height: max-content;
+    height: max-content * 2;
+    outline: none;
 }
 
 .center {
