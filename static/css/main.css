@@ -200,6 +200,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+.skill_kanban {
+    padding: 6px 14px;
+}
+
 .skill_del {
     cursor: pointer;
 }
@@ -333,7 +337,7 @@ input {
     border: none;
     background-color: #F7F9FC;
     font-size: 16px;
-    color: #0C1D3D;
+    color: #AFB6C7;
     outline: none;
     font-weight: 600;
     text-wrap: nowrap;
@@ -341,6 +345,23 @@ input {
 
 input::placeholder {
     color: #AFB6C7;
+}
+
+textarea {
+    color: #AFB6C7;
+    width: 100%;
+    height: 100px;
+    border: none;
+    border-radius: 8px;
+    background-color: #f7f9fc;
+    overflow: auto;
+    resize: none;
+    box-sizing: border-box;
+    height: max-content;
+}
+
+.center {
+    align-items: center;
 }
 
 .column-flex {

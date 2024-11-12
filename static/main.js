@@ -83,6 +83,21 @@ document.addEventListener("DOMContentLoaded", function() {
   });
 });
 
+document.addEventListener("DOMContentLoaded", function() {
+  const dateElement = document.getElementById("dateOfBirth");
+  const dateBirth = dateElement.getAttribute("data-date"); // Получаем дату из атрибута
+  const date = new Date(dateBirth);
+
+  const months = [
+      "января", "февраля", "марта", "апреля", "мая", "июня",
+      "июля", "августа", "сентября", "октября", "ноября", "декабря"
+  ];
+  
+  const formattedDate = `Родился ${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()} года`;
+  dateElement.textContent = formattedDate;
+});
+
+
 function confirmProject(event, resumeId) {
   // Останавливаем всплытие события, чтобы не перейти по ссылке
   event.stopPropagation();

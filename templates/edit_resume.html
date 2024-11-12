@@ -38,37 +38,36 @@
                     <input type="number" id="salary" name="salary" value="{{ resume.salary }}">
                 </div>
                 <div class="info-pills">
-                    <div class="resume_inf_block">
-                        <label for="experience">Опыт:</label>
+                    <div class="resume_inf_block gray-color">
+                        <label class="w100" for="experience">Лет опыта:</label>
                         <input type="number" id="experience" name="experience" value="{{ resume.experience }}">
                     </div>
-                    <div class="resume_inf_block">
-                        <label for="dateBirth">Дата рождения:</label>
+                    <div class="resume_inf_block gray-color">
                         <input type="date" id="dateBirth" name="dateBirth" value="{{ resume.dateBirth }}">
                     </div>
                 </div>
                 <div class="info-pills">
-                    <div class="resume_inf_block">
-                        <label for="telephone">Телефон:</label>
+                    <div class="resume_inf_block gray-color">
                         <input type="text" id="telephone" name="telephone" value="{{ resume.telephone }}">
                     </div>
-                    <div class="resume_inf_block">
-                        <label for="email">Email:</label>
+                    <div class="resume_inf_block gray-color">
                         <input type="email" id="email" name="email" value="{{ resume.email }}">
                     </div>
                 </div>
             </div>
-            
-            <div>
-                <label for="education">Образование:</label>
-                <input type="text" id="education" name="education" value="{{ resume.education }}">
+            <div class="inf_hr_history resume_inf_block gray-color center">
+                <img src="/static/icons/school_edit.svg" alt="">
+                <input type="text" id="education" name="education" value=" {{ resume.education }}">
             </div>
-            <div>
-                <label for="comment">Комментарий:</label>
+            <div class="inf_hr_history resume_inf_block gray-color center">
+                <img src="/static/icons/chat_edit.svg" alt="">
                 <textarea id="comment" name="comment">{{ resume.comment }}</textarea>
             </div>
 
-            <button type="submit">Сохранить изменения</button>
+            <button class="resume_inf_block bk-blue right" type="submit">
+                Сохранить изменения
+                <img src="/static/icons/check.svg" alt="">
+            </button>
         </form>
 
         <div class="files">
