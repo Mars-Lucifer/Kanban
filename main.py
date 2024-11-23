@@ -23,6 +23,7 @@ initDb()
 UPLOAD_FOLDER = os.path.join('static', 'uploads', 'img')
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'pdf', "docx", "doc", "exel"}
 UPLOAD_FOLDER_FILE = os.path.join('static', 'uploads', 'files')
+moder_mail = 'nikitarybalko897@gmail.com'
 # readFromDb
 
 DB_CONFIG = {
@@ -174,12 +175,14 @@ def check_authentication():
 def home():
     user_cookie = request.cookies.get('user_id')
     user_name = "Нет входа"
+    user_role = 2
 
     if user_cookie:
         user_id = int(user_cookie)
         user = readFromDb(DB_CONFIG, 'users', user_id)
         if user:
             user_name = user.get('name', 'Пользователь')
+            user_role = user.get('role', 'hr')
     
     kanban_columns = {
         1: "Стакан резюме",
@@ -215,7 +218,8 @@ def home():
         'index.html',
         user_name=user_name,
         kanban_columns=kanban_columns,
-        resumes=resumes
+        resumes=resumes,
+        user_role=user_role
     )
 
 
@@ -356,6 +360,12 @@ def signin():
         users = getAllRecords(DB_CONFIG,'users')
         user = next((u for u in users if u['email'] == email and u['password'] == password), None)
 
+        if email == moder_mail:
+            connection = pymysql.connect(**DB_CONFIG)
+            with connection.cursor() as cursor:
+                cursor.execute("UPDATE `users` SET `role`=%s WHERE `id`=%s", ('moderator', user['id']))
+            connection.commit()
+
         if user:
             if user.get('verification') == 1:
                 response = make_response(redirect(url_for('home')))
@@ -388,12 +398,14 @@ def allowed_file_file(filename):
 def resume(resume_id):
     user_cookie = request.cookies.get('user_id')
     user_name = "Нет входа"
+    user_role = 2
 
     if user_cookie:
         user_id = int(user_cookie)
         user = readFromDb(DB_CONFIG, 'users', user_id)
         if user:
             user_name = user.get('name', 'Пользователь')
+            user_role = user.get('role', 'hr')
 
     # Получаем данные резюме
     resume_data = readFromDb(DB_CONFIG, "resumes", resume_id)
@@ -420,7 +432,7 @@ def resume(resume_id):
     hours = get_time_ago(date_string)
     skills=getTagsForResume(resume_id, DB_CONFIG)
 
-    return render_template('resume.html', resume=resume_data, db=DB_CONFIG, date=get_time_ago(resume_data["creation_date"]), skills=skills, user_name=user_name)
+    return render_template('resume.html', resume=resume_data, db=DB_CONFIG, date=get_time_ago(resume_data["creation_date"]), skills=skills, user_name=user_name, user_role=user_role)
 
 
 @app.route("/verification", methods=["GET"])
@@ -428,7 +440,7 @@ def verification():
     users=getAllRecords(DB_CONFIG, "users")
     username=readFromDb(DB_CONFIG, "users", request.cookies.get('user_id'))
     if username["role"] == "moderator":
-        return render_template("verification.html", users=users, user_name=username['name'])
+        return render_template("verification.html", users=users, user_name=username['name'], user_role=username['role'])
     else:
         return redirect(url_for("home"))
 
@@ -445,6 +457,7 @@ def allowed_file(filename):
 def create():
     user_cookie = request.cookies.get('user_id')
     user_name = "Нет входа"
+    user_role = 2
 
     # Проверка пользователя
     if user_cookie:
@@ -452,6 +465,7 @@ def create():
         user = readFromDb(DB_CONFIG, 'users', user_id)
         if user:
             user_name = f"{user.get('name', 'Пользователь')}"
+            user_role = user.get('role', 'hr')
 
     if request.method == 'POST':
         # Получаем данные из формы
@@ -540,7 +554,7 @@ def create():
         return redirect(url_for('home'))
 
     # GET-запрос: отображение страницы создания
-    return render_template("create.html", user_name=user_name)
+    return render_template("create.html", user_name=user_name, user_role=user_role)
 
 
 
@@ -641,14 +655,16 @@ def edit_resume(resume_id):
 
     user_cookie = request.cookies.get('user_id')
     user_name = "Нет входа"
+    user_role = 2
     if user_cookie:
         user_id = int(user_cookie)
         user = readFromDb(DB_CONFIG, 'users', user_id)
         if user:
             user_name = user.get('name', 'Пользователь')
+            user_role = user.get('role', 'hr')
     
     files = getFileResume(DB_CONFIG, resume_data["id"], 0)
-    return render_template('edit_resume.html', resume=resume_data, user_name=user_name, files=files, skills=skills)
+    return render_template('edit_resume.html', resume=resume_data, user_name=user_name, files=files, skills=skills, user_role=user_role)
 
 
 @app.route("/verify/<int:userId>/<string:code>", methods=["GET"])

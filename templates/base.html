@@ -71,6 +71,12 @@
                     <img src="/static/icons/add_circle.svg" alt="Создание записей">
                     <span>Создание записей</span>
                 </a>
+                {% if user_role == 'moderator' %}
+                <a href="/verification" class="{% if request.path == '/verification' %}active{% endif %} page gray-color dymanic">
+                    <img src="/static/icons/verif_off.svg" alt="Верификация">
+                    <span>Верификация</span>
+                </a>
+                {% endif %}
             </div>
             <div class="bottom">
                 <button onclick="updateParentWidth()" class="page  active_roll" id="toggle_active_roll">

@@ -51,12 +51,16 @@ $(document).ready(function() {
                     img.attr("src", "/static/icons/note_stack_active.svg");
                 } else if (img.attr("src") === "/static/icons/add_circle.svg") {
                     img.attr("src", "/static/icons/add_circle_active.svg");
+                } else if (img.attr("src") === "/static/icons/verif_off.svg") {
+                    img.attr("src", "/static/icons/verif_on.svg");
                 }
             } else {
                 if (img.attr("src") === "/static/icons/note_stack_active.svg") {
                     img.attr("src", "/static/icons/note_stack.svg");
                 } else if (img.attr("src") === "/static/icons/add_circle_active.svg") {
                     img.attr("src", "/static/icons/add_circle.svg");
+                } else if (img.attr("src") === "/static/icons/verif_on.svg") {
+                    img.attr("src", "/static/icons/verif_off.svg");
                 }
             }
         });
