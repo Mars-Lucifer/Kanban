@@ -276,7 +276,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .redact_button{
     background-color: #0C1D3D !important;
-    color: #FFFFFF !important; 
+    color: #F7F9FC !important; 
 }
 
 .resume_inf_block {
@@ -767,4 +767,40 @@ td button img {
 
 tbody tr:hover .custom-select {
     background-color: #fff;
+}
+
+@keyframes btnSpawn {
+    0% {
+        opacity: 0;
+        scale: 0.9;
+    }
+    70% {
+        opacity: 1;
+        scale: 1.04;
+    }
+    100% {
+        scale: 1;
+    }
+}
+
+.btn_spawn {
+    animation: btnSpawn 400ms ease forwards;
+}
+
+@keyframes btnDespawn {
+    0% {
+        opacity: 1;
+        scale: 1;
+    }
+    30% {
+        scale: 1.04;
+    }
+    100% {
+        opacity: 0;
+        scale: 0.9;
+    }
+}
+
+.btn_despawn {
+    animation: btnDespawn 400ms ease forwards;
 }

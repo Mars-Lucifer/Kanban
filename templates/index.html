@@ -41,7 +41,7 @@
 
             <!-- Добавляем кнопку, если column_id == 6 -->
             {% if column_id == 6 %}
-                <button class="btn" onclick="confirmProject(event, {{ resume.id }})">Вывести на проект</button>
+                <button class="btn btn_spawn" onclick="confirmProject(event, {{ resume.id }})">Вывести на проект</button>
             {% endif %}
 
         </a>
@@ -62,7 +62,7 @@
             resumeCard.classList.remove("dragging");
         }
         event.currentTarget.classList.remove("drag-over");
-        
+
         // Перемещаем карточку в новую колонку
         event.currentTarget.appendChild(resumeCard);
 
@@ -79,9 +79,32 @@
         })
         .then(response => response.json())
         .then(data => {
-            if (data.status === "success" && data.message) {
-                // Показываем pop-up с сообщением и ссылкой
-                showPopUp(data.message, "/resume/"+resumeId); // Передаем URL в showPopUp
+            if (data.status === "success") {
+                if (data.message) {
+                    // Показываем pop-up с сообщением и ссылкой
+                    showPopUp(data.message, "/resume/" + resumeId);
+                }
+
+                // Обновляем состояние кнопки
+                const projectButton = resumeCard.querySelector(".btn");
+                if (targetColumn == 6) {
+                    if (!projectButton) {
+                        const button = document.createElement("button");
+                        button.className = "btn btn_spawn"; // Добавляем класс для анимации появления
+                        button.textContent = "Вывести на проект";
+                        button.setAttribute("onclick", `confirmProject(event, ${resumeId})`);
+                        resumeCard.appendChild(button);
+                    }
+                } else if (projectButton) {
+                    // Добавляем класс для анимации исчезновения
+                    projectButton.classList.add("btn_despawn");
+
+                    // Удаляем кнопку после завершения анимации
+                    projectButton.addEventListener("animationend", () => {
+                        projectButton.remove();
+                    }, { once: true });
+                }
+
             } else {
                 console.warn("Сообщение для pop-up отсутствует или статус не 'success'.");
             }
@@ -89,8 +112,8 @@
         .catch(error => {
             console.error("Ошибка при перемещении резюме:", error);
         });
-
     }
+
 
 
     // Обработчики событий для drag и drop
@@ -119,6 +142,52 @@
         column.addEventListener("dragover", allowDrop);
         column.addEventListener("drop", drop);
         column.addEventListener("dragleave", dragLeave);
+    });
+
+
+    // Прокрутка
+
+    
+    const kanbanContainer = document.querySelector('.kanban-container');
+    let autoScrollInterval = null;
+
+    function startAutoScroll(direction) {
+        stopAutoScroll(); // Остановить предыдущее автопрокручивание
+        autoScrollInterval = setInterval(() => {
+            kanbanContainer.scrollLeft += direction === 'left' ? -5 : 5; // Скорость прокрутки
+        }, 10); // Интервал прокрутки
+    }
+
+    function stopAutoScroll() {
+        if (autoScrollInterval) {
+            clearInterval(autoScrollInterval);
+            autoScrollInterval = null;
+        }
+    }
+
+    function handleDragMove(event) {
+        const containerRect = kanbanContainer.getBoundingClientRect();
+
+        if (event.clientX < containerRect.left + 100) {
+            // Если курсор около левого края
+            startAutoScroll('left');
+        } else if (event.clientX > containerRect.right - 100) {
+            // Если курсор около правого края
+            startAutoScroll('right');
+        } else {
+            // Останавливаем прокрутку, если курсор не у края
+            stopAutoScroll();
+        }
+    }
+
+    function handleDragEnd() {
+        stopAutoScroll(); // Останавливаем автопрокрутку, когда перетаскивание завершается
+    }
+
+    // Добавляем события на карточки
+    document.querySelectorAll('.card').forEach(card => {
+        card.addEventListener('drag', handleDragMove); // Отслеживаем движение
+        card.addEventListener('dragend', handleDragEnd); // Останавливаем, когда перетаскивание заканчивается
     });
 
 </script>

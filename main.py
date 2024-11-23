@@ -50,6 +50,8 @@ def send_email(db, user_id):
         # Отправка писем каждому модератору
         for moderator in moderators:
             receiver_email = moderator["email"]
+            user = readFromDb(DB_CONFIG, 'users', user_id)
+            email = user.get('email')
             
             # Настройка SMTP
             s = smtplib.SMTP("smtp.mail.ru", 587)
@@ -104,7 +106,7 @@ def send_email(db, user_id):
                                 <h2>Новый пользователь зарегистрировался</h2>
                                 <p>Уважаемый модератор,</p>
                                 <p>Зарегистрирован новый пользователь с данными:</p>
-                                <p><b>Email:</b> {receiver_email}</p>
+                                <p><b>Email:</b> {email}</p>
                                 <p><b>ID пользователя:</b> {user_id}</p>
                                 <p>Вы можете проверить профиль пользователя, перейдя по ссылке:</p>
                                 <p><a href="{request.host_url}verification">Проверить профиль</a></p>
@@ -218,43 +220,74 @@ def home():
 
 
 
-@app.route('/move_resume', methods=['POST'])
-def move_resume():
-    data = request.json
-    resume_id = int(data['resume_id'])
-    new_column = int(data['new_column'])
-    mode=None
-    # Обновляем поле "glass" в БД для данного резюме
-    update_result = updateInDbGlass(DB_CONFIG, 'resumes', resume_id, new_column)
-
-    if update_result:
-        resume = readFromDb(DB_CONFIG, 'resumes', resume_id)
-        if not resume:
-            return jsonify({"status": "error", "message": "Resume not found"}), 404
-        message = None
-        url = f"http://127.0.0.1:5000/resume/{resume_id}"
-
-        if new_column == 3:
-            mode=1
-            file_exist = fileExist(DB_CONFIG, mode, resume_id)
-            if not file_exist:
-                message = "Пожалуйста, загрузите файл скрининга."
-        elif new_column == 4:
-            mode=2
-            file_exist = fileExist(DB_CONFIG, mode, resume_id)
-            if not file_exist:
-                message = "Пожалуйста, загрузите файл результата собеседования."
-        elif new_column == 6:
-            mode=3
-            file_exist = fileExist(DB_CONFIG, mode, resume_id)
-            if not file_exist:
-                message = "Пожалуйста, загрузите файл оффера (обязательный файл)."
-
-        print(f"Message: {message}")
-        return jsonify({"status": "success", "message": message, "url": url}), 200
-
-    return jsonify({"status": "error", "message": "Resume not found: " + str(resume_id)}), 404
-
+@app.route('/move_resume', methods=['POST']) 
+def move_resume(): 
+    data = request.json 
+    resume_id = int(data['resume_id']) 
+    new_column = int(data['new_column']) 
+     
+    # Обновляем поле "glass" в БД для данного резюме 
+    update_result = updateInDbGlass(DB_CONFIG, 'resumes', resume_id, new_column) 
+ 
+    if update_result: 
+        resume = readFromDb(DB_CONFIG, 'resumes', resume_id) 
+        if not resume: 
+            return jsonify({"status": "error", "message": "Resume not found"}), 404 
+         
+        message = ['Пожалуйста, загрузите файл'] 
+        url = f"/resume/{resume_id}" 
+ 
+        # Проверяем файлы, которые нужно загрузить для определённых колонок 
+        if new_column == 3:  # Для колонки 3 требуется только файл скрининга (mode 1) 
+            mode = 1 
+            file_exist = fileExist(DB_CONFIG, mode, resume_id) 
+            if not file_exist: 
+                message.append('скрининга') 
+ 
+        elif new_column == 4 or new_column == 5:  # Для колонок 4 и 5 требуется файл собеседования (mode 2) искрининга (mode 1) 
+            # Проверка на файл собеседования (mode 2) 
+            mode = 2
+            file_exist = fileExist(DB_CONFIG, mode, resume_id) 
+            if not file_exist: 
+                message.append('результата собеседования') 
+             
+            # Проверка на файл скрининга (mode 1) 
+            mode = 1
+            file_exist = fileExist(DB_CONFIG, mode, resume_id) 
+            if not file_exist: 
+                message.append('скрининга') 
+ 
+        elif new_column == 6:  # Для колонки 6 требуются все 3 файла: оффера (mode 3), собеседования (mode 2) и скрининга (mode 1) 
+            # Проверка на файл оффера (mode 3) 
+            mode = 3
+            file_exist = fileExist(DB_CONFIG, mode, resume_id) 
+            if not file_exist: 
+                message.append('оффера (обязательный файл)') 
+             
+            # Проверка на файл результата собеседования (mode 2) 
+            mode = 2
+            file_exist = fileExist(DB_CONFIG, mode, resume_id) 
+            if not file_exist: 
+                message.append('результата собеседования') 
+             
+            # Проверка на файл скрининга (mode 1) 
+            mode = 1
+            file_exist = fileExist(DB_CONFIG, mode, resume_id) 
+            if not file_exist: 
+                message.append('скрининга') 
+ 
+        elif new_column == 1 or new_column == 2:
+            message = None 
+ 
+        # Формируем ответ с сообщением 
+        if len(message) > 2:  # Если список содержит больше одного элемента (первый элемент — общая фраза) 
+            message = ', '.join(message)
+ 
+        if message is not None: 
+            print(f"Message: {message}") 
+            return jsonify({"status": "success", "message": message, "url": url}), 200 
+ 
+    return jsonify({"status": "error", "message": f"Resume not found: {resume_id}"}), 404
 
 
 @app.route('/delete_resume/<int:resume_id>', methods=['DELETE'])
