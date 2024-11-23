@@ -270,6 +270,15 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     display: flex;
 }
 
+.skill input{
+    color: #0C1D3D;
+}
+
+.redact_button{
+    background-color: #0C1D3D !important;
+    color: #FFFFFF !important; 
+}
+
 .resume_inf_block {
     display: flex;
     background-color: #F7F9FC;
@@ -282,10 +291,26 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .resume_inf_block input {
     width: 100%;
+    color: #0C1D3D;
 }
 
 form .resume_inf_block img {
     margin-left: auto;
+}
+
+/* input {
+    color: #F7F9FC;
+    transition: color 0.3s;
+} */
+
+
+.resume_inf_block.input_id_black:focus, .inf_hr_history textarea:focus {
+    color: #0C1D3D;
+}
+
+.resume_inf_block.input_id_black input, .inf_hr_history textarea {
+    color: #AFB6C7;
+    transition: color 0.3s; /* плавный переход */
 }
 
 .bk-blue{
@@ -491,8 +516,8 @@ textarea {
 }
 
 .btn_gray {
-    background-color: #F7F9FC;
-    color: #AFB6C7;
+    background-color: #0C1D3D;
+    color: #ffffff;
 }
 
 .btn_red {
@@ -501,6 +526,10 @@ textarea {
 
 .w100 {
     width: 100%;
+}
+
+.wauto {
+    width: auto;
 }
 
 .avatar-preview {

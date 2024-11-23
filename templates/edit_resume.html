@@ -14,53 +14,53 @@
                     </label>
                 </div>
                 <div class="info-pills column-flex">
-                    <div class="resume_inf_block gray-color">
+                    <div class="resume_inf_block gray-color input_id_black">
                         <label for="name">Имя:</label>
                         <input type="text" id="name" name="name" value="{{ resume.name }}">
                     </div>
-                    <div class="resume_inf_block gray-color">
+                    <div class="resume_inf_block gray-color input_id_black">
                         <label for="surname">Фамилия:</label>
                         <input type="text" id="surname" name="surname" value="{{ resume.surname }}">
                     </div>
-                    <div class="resume_inf_block gray-color">
+                    <div class="resume_inf_block gray-color input_id_black">
                         <label for="patronymic">Отчество:</label>
                         <input type="text" id="patronymic" name="patronymic" value="{{ resume.patronymic }}">
                     </div>
                 </div>
             </div>
             <div class="info-block">
-                <div class="resume_inf_block gray-color">
+                <div class="resume_inf_block gray-color input_id_black">
                     <label for="post">Должность:</label>
                     <input type="text" id="post" name="post" value="{{ resume.position }}">
                 </div>
-                <div class="resume_inf_block gray-color">
+                <div class="resume_inf_block gray-color input_id_black">
                     <label for="salary">Зарплата:</label>
                     <input type="number" id="salary" name="salary" value="{{ resume.salary }}">
                 </div>
                 <div class="info-pills">
-                    <div class="resume_inf_block gray-color">
+                    <div class="resume_inf_block gray-color input_id_black">
                         <label class="w100" for="experience">Лет опыта:</label>
                         <input type="number" id="experience" name="experience" value="{{ resume.experience }}">
                     </div>
-                    <div class="resume_inf_block gray-color">
+                    <div class="resume_inf_block gray-color input_id_black">
                         <input type="date" id="dateBirth" name="dateBirth" value="{{ resume.dateBirth }}">
                     </div>
                 </div>
                 <div class="info-pills">
-                    <div class="resume_inf_block gray-color">
+                    <div class="resume_inf_block gray-color input_id_black">
                         <input type="text" id="telephone" name="telephone" value="{{ resume.telephone }}">
                     </div>
 
-                    <div class="resume_inf_block gray-color">
+                    <div class="resume_inf_block gray-color input_id_black">
                         <input type="email" id="email" name="email" value="{{ resume.email }}">
                     </div>
                 </div>
             </div>
-            <div class="inf_hr_history resume_inf_block gray-color center">
+            <div class="inf_hr_history resume_inf_block gray-color center input_id_black">
                 <img src="/static/icons/school_edit.svg" alt="">
                 <input type="text" id="education" name="education" value=" {{ resume.education }}">
             </div>
-            <div class="inf_hr_history resume_inf_block gray-color center">
+            <div class="inf_hr_history resume_inf_block gray-color center input_id_black">
                 <img src="/static/icons/chat_edit.svg" alt="">
                 <textarea id="comment" name="comment">{{ resume.comment }}
                 </textarea>

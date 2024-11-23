@@ -143,4 +143,15 @@ function previewImage(event) {
   }
 }
 
-
+document.querySelectorAll('input, textarea').forEach(element => {
+  element.addEventListener('input', () => {
+      element.style.color = element.value.trim() ? "black" : "gray";
+  });
+  element.addEventListener('blur', () => {
+      if (element.value.trim()) {
+          element.style.color = "black";
+      } else {
+          element.style.color = "gray";
+      }
+  });
+});

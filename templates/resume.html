@@ -65,7 +65,7 @@
             </div>
 
             <div class="info-pills">
-                <a href="/resume/edit/{{ resume.id }}" class="w100 resume_inf_block gray-color right">
+                <a href="/resume/edit/{{ resume.id }}" class="w100 redact_button resume_inf_block gray-color right">
                     <p>Редактировать</p>
                     <img src="/static/icons/edit.svg" alt="">
                 </a>
@@ -119,109 +119,7 @@
                 </div>
             </form>
         </div>
-        <!-- <div class="container">
-            <div class="table-header">
-                Данные пользователей
-            </div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Имя</th>
-                        <th>Фамилия</th>
-                        <th>Email</th>
-                        <th>Статус</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for user in users %}
-                    <tr>
-                        <td>{{ user.id }}</td>
-                        <td>{{ user.name }}</td>
-                        <td>{{ user.surname }}</td>
-                        <td>{{ user.email }}</td>
-                        <td>
-                            <span class="status {% if user.status == 1 %}active{% else %}inactive{% endif %}">
-                                {% if user.status == 1 %}Активен{% else %}Не активен{% endif %}
-                            </span>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-     -->
-        
-    </div>
-<style>
-            .container {
-            width: 90%;
-            max-width: 1200px;
-            background-color: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px;
-        }
-
-        th, td {
-            padding: 12px 18px;
-            text-align: left;
-            font-size: 16px;
-        }
-
-        th {
-            background-color: #007bff;
-            color: #ffffff;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        tr:nth-child(even) {
-            background-color: #f4f4f9;
-        }
-
-        tr:hover {
-            background-color: #f1f1f1;
-        }
-
-        td {
-            border-bottom: 1px solid #ddd;
-        }
-
-        .status {
-            padding: 6px 12px;
-            border-radius: 8px;
-            color: #fff;
-            font-weight: bold;
-        }
-
-        .status.active {
-            background-color: #28a745;
-        }
-
-        .status.inactive {
-            background-color: #dc3545;
-        }
-
-        .table-header {
-            padding: 20px;
-            background-color: #007bff;
-            color: #ffffff;
-            font-size: 24px;
-            text-align: center;
-            text-transform: uppercase;
-        }
-    .skill.skill_del:hover{
-        background-color: #F7F9FC;
-        color: black;
-        cursor: default;
-    }
+       
 </style>
     <script>
         // Функция, которая будет форматировать время

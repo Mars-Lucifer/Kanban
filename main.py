@@ -18,7 +18,7 @@ from colorama import Fore, init
 init()
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key'
+app.secret_key = 'kanban2024$'
 initDb()
 UPLOAD_FOLDER = os.path.join('static', 'uploads', 'img')
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'pdf', "docx", "doc", "exel"}
@@ -232,7 +232,7 @@ def move_resume():
         if not resume:
             return jsonify({"status": "error", "message": "Resume not found"}), 404
         message = None
-        url = f"http://127.0.0.1:5000/resume/{resume_id}" 
+        url = f"http://127.0.0.1:5000/resume/{resume_id}"
 
         if new_column == 3:
             mode=1
@@ -353,6 +353,15 @@ def allowed_file_file(filename):
 
 @app.route('/resume/<int:resume_id>', methods=['GET', 'POST'])
 def resume(resume_id):
+    user_cookie = request.cookies.get('user_id')
+    user_name = "Нет входа"
+
+    if user_cookie:
+        user_id = int(user_cookie)
+        user = readFromDb(DB_CONFIG, 'users', user_id)
+        if user:
+            user_name = user.get('name', 'Пользователь')
+
     # Получаем данные резюме
     resume_data = readFromDb(DB_CONFIG, "resumes", resume_id)
     
@@ -378,7 +387,7 @@ def resume(resume_id):
     hours = get_time_ago(date_string)
     skills=getTagsForResume(resume_id, DB_CONFIG)
 
-    return render_template('resume.html', resume=resume_data, db=DB_CONFIG, date=get_time_ago(resume_data["creation_date"]), skills=skills)
+    return render_template('resume.html', resume=resume_data, db=DB_CONFIG, date=get_time_ago(resume_data["creation_date"]), skills=skills, user_name=user_name)
 
 
 @app.route("/verification", methods=["GET"])
