@@ -167,7 +167,7 @@ def check_authentication():
     if user.get('verification') == 2:
         flash("Аккаунт заблокирован")
         return redirect(url_for('signin'))
-    
+
 @app.route('/')
 def home():
     user_cookie = request.cookies.get('user_id')
