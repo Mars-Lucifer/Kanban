@@ -124,3 +124,23 @@ function confirmProject(event, resumeId) {
       });
   }
 }
+function previewImage(event) {
+  var file = event.target.files[0]; // Получаем первый выбранный файл
+
+  // Проверяем, что файл существует и что это изображение
+  if (file && file.type.startsWith('image/')) {
+      var reader = new FileReader();  // Создаём новый FileReader для считывания файла
+
+      reader.onload = function(e) {
+          // Обновляем источник изображения на URL, сгенерированный для выбранного файла
+          document.getElementById('avatarPreview').src = e.target.result;
+      }
+
+      reader.readAsDataURL(file);  // Читаем файл как Data URL
+  } else {
+      // Если файл не изображение, показываем предупреждение или сбрасываем изображение
+      alert("Пожалуйста, выберите изображение.");
+  }
+}
+
+

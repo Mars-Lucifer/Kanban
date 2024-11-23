@@ -42,7 +42,7 @@ h1, .h1 {
     font-weight: 800;
 }
 
-h4 {
+h4, .h4 {
     font-weight: 600;
     font-size: 18px;
     color: #AFB6C7;
@@ -659,4 +659,83 @@ sidebar.collapsed {
     flex-grow: 1;
     transition: margin-left 0.3s;
     margin-left: 0; 
+}
+
+
+/* Verification */
+.table {
+    width: 100%;
+    gap: 4px;
+}
+
+thead, tbody {
+    width: 100%;
+}
+
+thead tr, tbody tr {
+    width: auto;
+    min-width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 16px;
+    padding: 14px;
+    border-radius: 16px;
+    transition: background-color 200ms ease-in;
+}
+
+tbody tr:hover {
+    background-color: #F7F9FC;
+}
+
+thead tr th, tr td {
+    width: 100%;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    justify-self: flex-start;
+    gap: 6px;
+}
+
+.w280 {
+    width: 200%;
+    word-break: break-all;
+}
+
+td button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 12px;
+    padding: 10px;
+}
+
+td button img {
+    height: 22px;
+}
+
+.btn-verify {
+    background-color: #1964FA;
+}
+
+.btn-unverify {
+    background-color: #FA3246;
+}
+
+.custom-select {
+    padding: 10px;
+    border-radius: 12px;
+    background-color: #F7F9FC;
+    border: none;
+    color: #AFB6C7;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+    transition: background-color 200ms ease-in;
+    outline: none;
+}
+
+tbody tr:hover .custom-select {
+    background-color: #fff;
 }

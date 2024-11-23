@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+
+{% block title %}Страница создания резюме{% endblock %}
+
+{% block content %}
+<div class="right_block">
+    <div class="info-block w100">
+        <table class="candidate table">
+            <thead>
+                <tr>
+                    <th class="h4 w280">Эл.почта</th>
+                    <th class="h4">Фамилия</th>
+                    <th class="h4">Имя</th>
+                    <th class="h4">Отчество</th>
+                    <th class="h4">Действия</th>
+                    <th class="h4">Роль</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                    {% if user.role != "moderator" %}
+                        <tr>
+                            <td class="w280">{{ user.email }}</td>
+                            <td>{{ user.surname }}</td>
+                            <td>{{ user.name }}</td>
+                            <td>{{ user.patronymic }}</td>
+                            <td>
+                                {% if user.verification != 1 %}
+                                    <button title="Верифицировать" id="btn-result" class="btn-verify" data-account-name="{{ user.name }}" data-account-id="{{ user.id }}"><img src="{{ url_for('static', filename='icons/verif.svg') }}" alt="verif"></button>
+                                {% endif %}
+                                {% if user.verification == 0 or user.verification == 1 %}
+                                    <button title="Не верифицировать" id="btn-result" class="btn-unverify" data-account-name="{{ user.name }}" data-account-id="{{ user.id }}"><img src="{{ url_for('static', filename='icons/block.svg') }}" alt="block"></button>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <select class="custom-select" data-account-id="{{ user.id }}">
+                                    <option value="2" {% if user.role == 'hr' %}selected{% endif %}>hr</option>
+                                    <option value="1" {% if user.role == 'moderator' %}selected{% endif %}>модератор</option>
+                                </select>
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('#btn-result').forEach(button => {
+        button.addEventListener('click', (event) => {
+            const accountId = button.getAttribute('data-account-id');
+            const accountName = button.getAttribute('data-account-name');
+            const action = button.classList.contains('btn-verify') ? 'verify' :
+                           button.classList.contains('btn-unverify') ? 'unverify' : 'unknown';
+
+            if (action !== 'unknown') {
+                let message;
+                if (action == 'verify') {
+                    message = `Пользователь ${accountName} успешно верифицирован`;
+                }
+                else if (action == 'unverify') {
+                    message = `Верификация пользователя ${accountName} отозвана`;
+                }
+                console.log(message);
+                
+                fetch(`/account/${action}/${accountId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ accountId: accountId })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(message);
+                        // Обновите интерфейс, если нужно
+                    } else {
+                        alert(`Ошибка выполнения действия "${action}" для аккаунта с ID ${accountId}.`);
+                    }
+                })
+                .catch(error => {
+                    console.error('Ошибка:', error);
+                    alert('Произошла ошибка при отправке запроса.');
+                });
+            } else {
+                console.warn('Неизвестное действие.');
+            }
+            setTimeout(() => {
+                location.reload();
+            }, 100)
+        });
+    });
+});
+document.addEventListener('DOMContentLoaded', () => {
+    // Находим все выпадающие списки
+    const selects = document.querySelectorAll('.custom-select');
+
+    // Назначаем обработчик события каждому выпадающему списку
+    selects.forEach(select => {
+        select.addEventListener('change', event => {
+            // Получаем ID аккаунта из data-account-id
+            const accountId = event.target.getAttribute('data-account-id');
+            // Получаем выбранное значение роли
+            const selectedRole = event.target.value;
+
+            // Выводим данные в консоль
+            console.log(`Account ID: ${accountId}, Selected Role: ${selectedRole}`);
+
+            fetch('/update-role', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    account_id: accountId,
+                    role: selectedRole,
+                }),
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Ошибка при обновлении роли');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Роль обновлена успешно:', data);
+            })
+            .catch(error => {
+                console.error('Ошибка:', error);
+            });
+        });
+    });
+});
+
+
+
+</script>
+{% endblock %}

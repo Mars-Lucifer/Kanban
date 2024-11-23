@@ -11,7 +11,7 @@
                 </div>
                 <div class="about_person gap-8">
                     <h1>{{ resume.surname }} {{ resume.name }} {{ resume.patronymic }}</h1>
-                    <h3 class="blue-color">{{ resume.post }}</h3>
+                    <h3 class="blue-color">{{ resume.position }}</h3>
                     <h4>Ожидаемая ЗП: {{ resume.salary }}</h4>
                 </div>
             </div>
@@ -35,33 +35,35 @@
                     </div>
                 </div>
             </div>
-            <div class="skills">
-                {% for skill in resume.tag %}
-                    <div class="skill">
-                        <p>{{ skill }}</p>
+            <div class="skills" id="skills">
+                {% for skill in skills %}
+                    <div class="skill skill_del" data-resume-id="{{skill['id']}}">
+                        {{skill["name"]}}
                     </div>
+
                 {% endfor %}
-            </div>            
+            </div>
+
             <div class="education">
                 <img src="/static/icons/school.svg" alt="">
                 <p class="gray-color">{{ resume.education }}</p>
             </div>
             <div class="inf_hr_history">
                 <img src="/static/icons/icon.svg" alt="">
-                <p class="gray-color" title="{{ resume.hr_fio[0] }} {{ resume.hr_fio[1] }} {{ resume.hr_fio[2] }}">
-                    {{ resume.hr_fio[1] }} {{ resume.hr_fio[2] }}
+                <p class="gray-color" title="{{ resume.hr_fio}}">
+                    {{ resume.hr_fio }}
                 </p>
             </div>
             <div class="inf_hr_history">
                 <img src="/static/icons/history.svg" alt="">
                 <p class="gray-color" id="hr_time" data-time="{{ resume.creation_date }}" title="{{ resume.creation_date }}">
-                    {{ format_time }}
                 </p>
             </div>
             <div class="inf_hr_history">
                 <img src="/static/icons/chat.svg" alt="">
                 <p class="gray-color">{{ resume.comment }}</p>
             </div>
+
             <div class="info-pills">
                 <a href="/resume/edit/{{ resume.id }}" class="w100 resume_inf_block gray-color right">
                     <p>Редактировать</p>
@@ -72,18 +74,23 @@
                 {% endif %}
                     <button class="w100 resume_inf_block right btn btn_red" onclick="confirmProject(event, {{ resume.id }})">Удалить резюме</button>
             </div>
+            
         </div>
         <div class="files">
             <p class="h1">Файлы</p>
             <form method="POST" action="{{ url_for('resume', resume_id=resume.id) }}" enctype="multipart/form-data">
                 <div class="info-block">
+                    <!-- Отладка: выводим список файлов -->
+        
                     {% for i in range(1, 4) %}
+
                         <div class="info-pills">
                             <div class="resume_inf_block">
-                                {% if resume.files[i-1][0] == 0 %}
-                                    <div class="circle circle_gray"></div>
-                                {% else %}
+                                {% set file = files(db,  resume.id, i) %}
+                                {% if file[0] %}
                                     <div class="circle circle_blue"></div>
+                                {% else %}
+                                    <div class="circle circle_gray"></div>
                                 {% endif %}
                                 
                                 <p>
@@ -98,12 +105,12 @@
                                 <img src="/static/icons/download.svg" alt="download">
                             </div>
                             <div class="resume_inf_block attach">
-                                {% if resume.files[i-1][0] == 0 %}
+                                {% if file %}
+                                    <a href="..\{{ file[0] }}" target="_blank" class="blue-color">Открыть файл</a>
+                                {% else %}
                                     <input type="file" name="file_{{ i }}" id="file_{{ i }}" onchange="updateButtonText({{ i }})" style="display: none;">
                                     <button type="button" id="button_{{ i }}" class="gray-color" onclick="document.getElementById('file_{{ i }}').click();">Выбрать</button>
                                     <button type="submit" id="button_{{ i }}_2" class="gray-color" style="display: none;">Прикрепить</button>
-                                {% else %}
-                                    <a href="../{{ resume.files[i-1][1] }}" target="_blank" class="blue-color">Открыть файл</a>
                                 {% endif %}
                                 <img src="/static/icons/upload.svg" alt="upload">
                             </div>
@@ -112,8 +119,110 @@
                 </div>
             </form>
         </div>
+        <!-- <div class="container">
+            <div class="table-header">
+                Данные пользователей
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Имя</th>
+                        <th>Фамилия</th>
+                        <th>Email</th>
+                        <th>Статус</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user.id }}</td>
+                        <td>{{ user.name }}</td>
+                        <td>{{ user.surname }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>
+                            <span class="status {% if user.status == 1 %}active{% else %}inactive{% endif %}">
+                                {% if user.status == 1 %}Активен{% else %}Не активен{% endif %}
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+     -->
+        
     </div>
+<style>
+            .container {
+            width: 90%;
+            max-width: 1200px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
 
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px;
+        }
+
+        th, td {
+            padding: 12px 18px;
+            text-align: left;
+            font-size: 16px;
+        }
+
+        th {
+            background-color: #007bff;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f4f4f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        td {
+            border-bottom: 1px solid #ddd;
+        }
+
+        .status {
+            padding: 6px 12px;
+            border-radius: 8px;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .status.active {
+            background-color: #28a745;
+        }
+
+        .status.inactive {
+            background-color: #dc3545;
+        }
+
+        .table-header {
+            padding: 20px;
+            background-color: #007bff;
+            color: #ffffff;
+            font-size: 24px;
+            text-align: center;
+            text-transform: uppercase;
+        }
+    .skill.skill_del:hover{
+        background-color: #F7F9FC;
+        color: black;
+        cursor: default;
+    }
+</style>
     <script>
         // Функция, которая будет форматировать время
         document.addEventListener('DOMContentLoaded', function () {

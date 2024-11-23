@@ -31,7 +31,7 @@
             <div class="info-block">
                 <div class="resume_inf_block gray-color">
                     <label for="post">Должность:</label>
-                    <input type="text" id="post" name="post" value="{{ resume.post }}">
+                    <input type="text" id="post" name="post" value="{{ resume.position }}">
                 </div>
                 <div class="resume_inf_block gray-color">
                     <label for="salary">Зарплата:</label>
@@ -50,6 +50,7 @@
                     <div class="resume_inf_block gray-color">
                         <input type="text" id="telephone" name="telephone" value="{{ resume.telephone }}">
                     </div>
+
                     <div class="resume_inf_block gray-color">
                         <input type="email" id="email" name="email" value="{{ resume.email }}">
                     </div>
@@ -61,9 +62,21 @@
             </div>
             <div class="inf_hr_history resume_inf_block gray-color center">
                 <img src="/static/icons/chat_edit.svg" alt="">
-                <textarea id="comment" name="comment">{{ resume.comment }}</textarea>
+                <textarea id="comment" name="comment">{{ resume.comment }}
+                </textarea>
             </div>
+            <div class="skills" id="skills">
+                <div class="skill">
+                    <img src="/static/icons/add.svg" alt="">
+                    <input type="text" id="skillInput" placeholder="Введите тег..." />
+                </div>
+                {% for skill in skills %}
+                    <div class="skill skill_del" data-resume-id="{{skill['id']}}">
+                        {{skill["name"]}}
+                    </div>
 
+                {% endfor %}
+            </div>
             <button class="resume_inf_block bk-blue right" type="submit">
                 Сохранить изменения
                 <img src="/static/icons/check.svg" alt="">
@@ -77,7 +90,7 @@
                     {% for i in range(1, 4) %}
                         <div class="info-pills">
                             <div class="resume_inf_block">
-                                {% if resume.files[i-1][0] == 0 %}
+                                {% if files == 0 %}
                                     <div class="circle circle_gray"></div>
                                 {% else %}
                                     <div class="circle circle_blue"></div>
@@ -92,21 +105,40 @@
                                         Оффер
                                     {% endif %}
                                 </p>
+                                <p>
+                                    {% if i == 1 and screening_date %}
+                                        Дата: {{ screening_date }}
+                                    {% elif i == 2 and interview_result_date %}
+                                        Дата: {{ interview_result_date }}
+                                    {% elif i == 3 and offer_date %}
+                                        Дата: {{ offer_date }}
+                                    {% endif %}
+                                </p>
                                 <img src="/static/icons/download.svg" alt="download">
                             </div>
+                            
                             <div class="resume_inf_block attach">
-                                {% if resume.files[i-1][0] == 0 %}
+                                {% if files[i-1] == 0 %}
                                     <input type="file" name="file_{{ i }}" id="file_{{ i }}" onchange="updateButtonText({{ i }})" style="display: none;">
-                                    <button type="button" id="button_{{ i }}" class="gray-color" onclick="document.getElementById('file_{{ i }}').click();">Выбрать</button>
+                                    <button type="button" id="button_{{ i }}" class="gray-color" onclick="document.getElementById('file_{{ i }}').click();" data-stage="{{ i }}">
+                                        {% if i == 1 %}
+                                            Скрининг
+                                        {% elif i == 2 %}
+                                            Результат собеседования
+                                        {% elif i == 3 %}
+                                            Оффер
+                                        {% endif %}
+                                    </button>
                                     <button type="submit" id="button_{{ i }}_2" class="gray-color" style="display: none;">Прикрепить</button>
                                 {% else %}
-                                    <a href="../{{ resume.files[i-1][1] }}" target="_blank" class="blue-color">Открыть файл</a>
+                                    <a href="../{{ files[i-1] }}" target="_blank" class="blue-color">Открыть файл</a>
                                 {% endif %}
                                 <img src="/static/icons/upload.svg" alt="upload">
                             </div>
                         </div>
                     {% endfor %}
                 </div>
+                
             </form>
         </div>
     </div>
@@ -126,5 +158,81 @@
                 button.style.display = 'block';
             }
         }
+        const skillInput = document.getElementById('skillInput');
+const skillsList = document.getElementById('skills');
+const skillsArray = [];
+
+// Обработчик нажатия на тег (клик)
+skillsList.addEventListener('click', function(event) {
+    // Проверяем, был ли клик по элементу с классом .skill_del
+    if (event.target.classList.contains('skill_del')) {
+        const skillBlock = event.target;
+        const skill = skillBlock.textContent.trim();
+
+        // Получаем data-tag-id
+        const tagId = skillBlock.getAttribute('data-resume-id');
+
+        // Удаляем из массива
+        const resumeId = {{resume.id}}; 
+
+        fetch(`/remove_tag/${tagId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'  // Указываем, что отправляем JSON
+            },
+            body: JSON.stringify({ resume_id: resumeId }) // Отправляем resume_id в теле запроса
+        })
+        .then(response => response.json())  // Преобразуем ответ в JSON
+        .then(data => {
+            console.log('Tag removed:', data);  // Обрабатываем успешный ответ
+        })
+        .catch(error => {
+            console.error('Error:', error);  // Обрабатываем ошибку
+        });
+
+        const index = skillsArray.indexOf(skill);
+        if (index !== -1) {
+            skillsArray.splice(index, 1);
+        }
+
+        // Уведомляем и удаляем блок с тегом
+        alert("delete: " + skill);
+        skillBlock.remove();
+    }
+});
+
+// Обработчик нажатия клавиши Enter в поле ввода
+skillInput.addEventListener('keypress', function(event) {
+    if (event.key === 'Enter' && skillInput.value.trim() !== '') {
+        event.preventDefault();
+        const skill = skillInput.value.trim();
+
+        // Добавляем тег в массив
+        skillsArray.push(skill);
+
+        // Создаем блок с тегом
+        const skillBlock = document.createElement('div');
+        skillBlock.classList.add('skill', 'skill_del');
+        skillBlock.textContent = skill;
+
+        // Добавляем новый блок в список
+        skillsList.appendChild(skillBlock);
+
+        // Очищаем поле ввода
+        skillInput.value = '';
+    }
+});
+
+
+
+    // Перед отправкой формы добавляем массив тегов в скрытое поле формы
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function() {
+        const skillsInput = document.createElement('input');
+        skillsInput.type = 'hidden';
+        skillsInput.name = 'skills';
+        skillsInput.value = JSON.stringify(skillsArray);
+        form.appendChild(skillsInput);
+    });
     </script>
 {% endblock %}

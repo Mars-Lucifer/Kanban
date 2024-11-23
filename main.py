@@ -1,18 +1,36 @@
 """
 This module handles the main functionality for the Pokemon app.
 """
+from email.mime.image import MIMEImage
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+import pymysql
 import os, json, timeago
+import smtplib
 from datetime import datetime
 from werkzeug.utils import secure_filename
 from flask import Flask, request, render_template, flash, redirect, url_for, make_response, jsonify
-from database import initDb, addUser, addResume, readFromDb, updateInDb, getAllRecords, updateFileInDb, deleteFromDb
+from database import addTag, fileExist, initDb, addUser, addResume, readFromDb, updateInDb, updateInDbGlass, getAllRecords
+from database import hash_password, updateFileInDb, deleteFromDb, getFileResume, addFileResume,getTagsForResume, updateResumePhoto
+from database import get_time_ago, removeTag, tagExists, generate_activation_code, save_code
+from colorama import Fore, init
+
+init()
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
 initDb()
 UPLOAD_FOLDER = os.path.join('static', 'uploads', 'img')
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'pdf', "docx", "doc", "exel"}
 UPLOAD_FOLDER_FILE = os.path.join('static', 'uploads', 'files')
+# readFromDb
+
+DB_CONFIG = {
+    'host': 'localhost',
+    'user': 'root',
+    'password': '',
+    'database': 'kanban'
+}
 
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
@@ -20,31 +38,124 @@ if not os.path.exists(UPLOAD_FOLDER):
 if not os.path.exists(UPLOAD_FOLDER_FILE):
     os.makedirs(UPLOAD_FOLDER_FILE)
 
+def send_email(db, user_id):
+    try:
+        # Подключение к базе данных
+        connection = pymysql.connect(**db)
+        with connection.cursor(pymysql.cursors.DictCursor) as cursor:
+            # Получение email всех модераторов
+            cursor.execute("SELECT email FROM `users` WHERE `role`=%s", ("moderator",))
+            moderators = cursor.fetchall()
+
+        # Отправка писем каждому модератору
+        for moderator in moderators:
+            receiver_email = moderator["email"]
+            
+            # Настройка SMTP
+            s = smtplib.SMTP("smtp.mail.ru", 587)
+            s.starttls()
+            s.login("hello@irminsul.space", "MBsmFgciJC5nGzTsj7vf")
+
+            # Формирование сообщения
+            msg = MIMEMultipart()
+            msg['From'] = 'hello@irminsul.space'
+            msg['To'] = receiver_email
+            msg['Subject'] = f"Верификация на сайте: Новый пользователь {receiver_email}"
+
+            # Тело письма
+            body = f"""
+            <html>
+                <head>
+                    <style>
+                        body {{
+                            font-family: Arial, sans-serif;
+                            background-color: #f4f4f4;
+                            color: #333;
+                        }}
+                        table {{
+                            width: 100%;
+                            max-width: 600px;
+                            margin: auto;
+                            padding: 20px;
+                            background-color: white;
+                            border-radius: 8px;
+                            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                        }}
+                        h2 {{
+                            color: #007BFF;
+                        }}
+                        p {{
+                            margin: 0 0 10px;
+                        }}
+                        a {{
+                            color: #007BFF;
+                            text-decoration: none;
+                            font-weight: bold;
+                        }}
+                        a:hover {{
+                            text-decoration: underline;
+                        }}
+                    </style>
+                </head>
+                <body>
+                    <table>
+                        <tr>
+                            <td>
+                                <h2>Новый пользователь зарегистрировался</h2>
+                                <p>Уважаемый модератор,</p>
+                                <p>Зарегистрирован новый пользователь с данными:</p>
+                                <p><b>Email:</b> {receiver_email}</p>
+                                <p><b>ID пользователя:</b> {user_id}</p>
+                                <p>Вы можете проверить профиль пользователя, перейдя по ссылке:</p>
+                                <p><a href="{request.host_url}verification">Проверить профиль</a></p>
+                                <p>С уважением,</p>
+                                <p>Команда модерации</p>
+                            </td>
+                        </tr>
+                    </table>
+                </body>
+            </html>
+            """
+
+            msg.attach(MIMEText(body, 'html'))
+
+            # Отправка письма
+            s.sendmail("hello@irminsul.space", receiver_email, msg.as_string())
+            print(f"Письмо отправлено модератору: {receiver_email}")
+            s.quit()
+
+    except Exception as e:
+        print(f"Ошибка при отправке письма: {e}")
+
+
+
+
 @app.template_filter('format_time')
 def format_time(value):
-    # Преобразуем строку даты в объект datetime
     if isinstance(value, str):
-        value = datetime.strptime(value, "%Y-%m-%d %H:%M:%S")  # Пример формата даты
-    return timeago.format(value, datetime.now())  # Возвращаем формат "час назад", "3 дня назад"
+        value = datetime.strptime(value, "%Y-%m-%d %H:%M:%S") 
+    return timeago.format(value, datetime.now()) 
 
 @app.before_request
 def check_authentication():
-    if request.endpoint in ['signin', 'signup', 'static']:
+    # Получаем имя маршрута, с которого был выполнен запрос
+    endpoint = request.endpoint
+
+    # Исключаем проверку аутентификации для следующих маршрутов
+    if endpoint in ['verify_account', 'signin', 'signup', 'static']:
         return None
     
     # Получаем user_id из cookie
     user_cookie = request.cookies.get('user_id')
 
-    # 1. Проверка: Есть ли cookie у пользователя
     if not user_cookie:
         flash("Пожалуйста, зарегистрируйтесь для доступа.")
         return redirect(url_for('signup'))
 
-    # Преобразуем user_id в int, так как он будет храниться как строка
     user_id = int(user_cookie)
 
     # 2. Проверка аккаунта в базе данных
-    user = readFromDb('users', user_id)
+    user = readFromDb(DB_CONFIG, 'users', user_id)
     if not user:
         flash("Такого аккаунта не существует, войдите в другой или создайте новый.")
         return redirect(url_for('signup'))
@@ -52,6 +163,9 @@ def check_authentication():
     # 3. Проверка верификации аккаунта
     if user.get('verification') == 0:
         flash("Аккаунт не верифицирован, войдите в новый.")
+        return redirect(url_for('signin'))
+    if user.get('verification') == 2:
+        flash("Аккаунт заблокирован")
         return redirect(url_for('signin'))
     
 @app.route('/')
@@ -61,11 +175,10 @@ def home():
 
     if user_cookie:
         user_id = int(user_cookie)
-        user = readFromDb('users', user_id)
+        user = readFromDb(DB_CONFIG, 'users', user_id)
         if user:
             user_name = user.get('name', 'Пользователь')
-
-    # Определение названий колонок
+    
     kanban_columns = {
         1: "Стакан резюме",
         2: "Теплый контакт",
@@ -75,18 +188,27 @@ def home():
         6: "Оффер"
     }
 
-    # Извлечение резюме из БД и группировка по "glass"
-    resumes = {column_id: [] for column_id in kanban_columns.keys()}
-    all_resumes = getAllRecords('resumes')  # Функция для получения всех резюме
+    # Проверка наличия резюме в базе данных
+    if readFromDb(DB_CONFIG, "resumes", 1) is False:
+        resumes = {column_id: [] for column_id in kanban_columns.keys()}
+    else:
+        resumes = {column_id: [] for column_id in kanban_columns.keys()}
 
-    for resume in all_resumes:
-        column_id = resume.get('glass', 1)
-        if column_id in resumes:
-            # Преобразуем теги из строки JSON в список
-            if resume.get('tag'):
-                resume['tag'] = json.loads(resume['tag'])
-            resumes[column_id].append(resume)
+        # Извлекаем все резюме
+        all_resumes = getAllRecords(DB_CONFIG, 'resumes')  
+        for resume in all_resumes:
+            column_id = resume.get('glass', 1)
 
+            if column_id in resumes:
+                resume_id = resume.get('id') 
+                tags = getAllRecords(DB_CONFIG, 'tags')  
+                resume_tags = [tag['name'] for tag in tags if tag['resume_id'] == resume_id]
+
+                resume['tag'] = resume_tags
+
+                resumes[column_id].append(resume)
+
+    print(Fore.RED + user_name)
     return render_template(
         'index.html',
         user_name=user_name,
@@ -94,42 +216,54 @@ def home():
         resumes=resumes
     )
 
+
+
 @app.route('/move_resume', methods=['POST'])
 def move_resume():
     data = request.json
     resume_id = int(data['resume_id'])
     new_column = int(data['new_column'])
-
+    mode=None
     # Обновляем поле "glass" в БД для данного резюме
-    update_result = updateInDb('resumes', resume_id, {'glass': new_column})
+    update_result = updateInDbGlass(DB_CONFIG, 'resumes', resume_id, new_column)
 
     if update_result:
-        # Загружаем данные резюме для проверки состояния файлов
-        resume = readFromDb('resumes', resume_id)
+        resume = readFromDb(DB_CONFIG, 'resumes', resume_id)
         if not resume:
             return jsonify({"status": "error", "message": "Resume not found"}), 404
-
         message = None
-        url = f"http://127.0.0.1:5000/resume/{resume_id}"  # Ссылка на само резюме
-        
-        # Проверка нового столбца и настройка сообщения
-        if new_column == 3:
-            message = "Пожалуйста, загрузите файл скрининга."
-        elif new_column == 4:
-            message = "Пожалуйста, загрузите файл результата собеседования."
-        elif new_column == 6:
-            message = "Пожалуйста, загрузите файл оффера (обязательный файл)."
+        url = f"http://127.0.0.1:5000/resume/{resume_id}" 
 
+        if new_column == 3:
+            mode=1
+            file_exist = fileExist(DB_CONFIG, mode, resume_id)
+            if not file_exist:
+                message = "Пожалуйста, загрузите файл скрининга."
+        elif new_column == 4:
+            mode=2
+            file_exist = fileExist(DB_CONFIG, mode, resume_id)
+            if not file_exist:
+                message = "Пожалуйста, загрузите файл результата собеседования."
+        elif new_column == 6:
+            mode=3
+            file_exist = fileExist(DB_CONFIG, mode, resume_id)
+            if not file_exist:
+                message = "Пожалуйста, загрузите файл оффера (обязательный файл)."
+
+        print(f"Message: {message}")
         return jsonify({"status": "success", "message": message, "url": url}), 200
-    return jsonify({"status": "error", "message": "Resume not found"}), 404
+
+    return jsonify({"status": "error", "message": "Resume not found: " + str(resume_id)}), 404
+
+
 
 @app.route('/delete_resume/<int:resume_id>', methods=['DELETE'])
 def delete_resume(resume_id):
-    success = deleteFromDb('resumes', resume_id)  # Удаляем запись из БД
+    success = deleteFromDb(DB_CONFIG,'resumes', resume_id) 
     if success:
-        return '', 200  # Возвращаем успешный ответ
+        return '', 200 
     else:
-        return '', 404  # Возвращаем ошибку, если запись не найдена
+        return '', 404  
 
 @app.route('/logout')
 def logout():
@@ -148,25 +282,23 @@ def signup():
         patronymic = request.form.get('patronymic')
         email = request.form.get('email')
         password = request.form.get('password')
+        password=hash_password(password)
 
         # Проверяем, существует ли пользователь с таким email
-        existing_user = next((user for user in getAllRecords('users') if user.get('email') == email), None)
+        existing_user = readFromDb(DB_CONFIG, "users",email=email, password=password)
         if existing_user:
             flash("Пользователь с таким email уже существует.")
             return redirect(url_for('signup'))
 
-        # Получаем максимальный ID пользователя и увеличиваем его на 1
-        users = getAllRecords('users')
-        if users:
-            last_id = max(user['id'] for user in users)
-            user_id = last_id + 1
-        else:
-            user_id = 1  # Начальный ID, если пользователей еще нет
 
         # Добавление нового пользователя в базу данных
-        addUser(user_id, name, surname, patronymic, email, password)
-
-        flash("Регистрация прошла успешно! Пожалуйста, войдите.")
+        addUser(DB_CONFIG, name, surname, patronymic, email, password, "hr")
+        code = generate_activation_code(11)
+        user = readFromDb(DB_CONFIG, "users", email=email, password=password)
+        save_code(DB_CONFIG, code, user["id"])
+        send_email(DB_CONFIG,user["id"])
+        print(Fore.RED + "id: "+ str(user["id"]) + "\n" + code)
+        flash("Регистрация завершена. Дождитесь верификации аккаунта")
         return redirect(url_for('signin'))
     
     user_cookie = request.cookies.get('user_id')
@@ -174,7 +306,7 @@ def signup():
 
     if user_cookie:
         user_id = int(user_cookie)
-        user = readFromDb('users', user_id)
+        user = readFromDb(DB_CONFIG,'users', user_id)
         if user:
             user_name = user.get('name', 'Пользователь')
 
@@ -186,23 +318,19 @@ def signin():
         # Получаем данные из формы
         email = request.form.get('email')
         password = request.form.get('password')
-
+        password=hash_password(password)
         # Ищем пользователя с указанным email и паролем
-        users = getAllRecords('users')
+        users = getAllRecords(DB_CONFIG,'users')
         user = next((u for u in users if u['email'] == email and u['password'] == password), None)
 
-        # Проверяем, существует ли пользователь
         if user:
-            # Проверяем, верифицирован ли пользователь
             if user.get('verification') == 1:
-                # Успешный вход: создаем ответ с cookie
                 response = make_response(redirect(url_for('home')))
-                # Записываем ID пользователя в cookie с секретным ключом
                 response.set_cookie('user_id', str(user['id']), httponly=True, secure=True)
                 flash("Вы успешно вошли в аккаунт.")
                 return response
             else:
-                flash("Ваш аккаунт не верифицирован.")
+                flash("Аккаунт не верифицирован. Обратитесь к менеджеру")
                 return redirect(url_for('signin'))
         else:
             flash("Неправильный email или пароль. Попробуйте снова.")
@@ -213,7 +341,7 @@ def signin():
 
     if user_cookie:
         user_id = int(user_cookie)
-        user = readFromDb('users', user_id)
+        user = readFromDb(DB_CONFIG,'users', user_id)
         if user:
             user_name = user.get('name', 'Пользователь')
     
@@ -225,161 +353,173 @@ def allowed_file_file(filename):
 
 @app.route('/resume/<int:resume_id>', methods=['GET', 'POST'])
 def resume(resume_id):
-    resume_data = readFromDb("resumes", resume_id)
+    # Получаем данные резюме
+    resume_data = readFromDb(DB_CONFIG, "resumes", resume_id)
     
-    if resume_data is None:
+    if not resume_data:
         flash("Резюме не найдено")
         return redirect(url_for('home'))
-    
-    # Преобразование тегов из строки JSON в список
-    if resume_data.get('tag'):
-        resume_data['tag'] = json.loads(resume_data['tag'])
-
     if request.method == 'POST':
-        files_uploaded = False  # Флаг, показывающий, загружен ли файл
-
-        for i in range(1, 4):
+        for i in range(1, 4): 
             file = request.files.get(f'file_{i}')
-            if file:
-                # Проверяем файл с функцией allowed_file
-                if allowed_file(file.filename):
-                    # Если файл прошёл проверку, сохраняем его с оригинальным именем
-                    filename = secure_filename(file.filename)
-                else:
-                    # Если файл не прошёл проверку, создаем имя {id_resume}_file_{i}
-                    filename = f"{resume_id}_file_{i}.{file.filename.rsplit('.', 1)[-1]}"
-                
-                # Путь для сохранения файла
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
                 file_path = os.path.join(UPLOAD_FOLDER, filename)
-                
-                # Создаём папку, если её нет
                 if not os.path.exists(UPLOAD_FOLDER):
                     os.makedirs(UPLOAD_FOLDER)
-                
-                # Сохраняем файл
+
                 file.save(file_path)
+                addFileResume(DB_CONFIG, resume_id, file_path, i)
 
-                # Обновляем путь файла в базе данных
-                if updateFileInDb(resume_id, i, file_path):
-                    flash(f"Файл {i} успешно загружен!")
-                    files_uploaded = True
-                else:
-                    flash(f"Не удалось загрузить файл {i}.")
+        flash("Файлы успешно загружены!")
+        return redirect(url_for('resume', resume_id=resume_id))
+    app.jinja_env.globals['files'] = getFileResume
+    date_string = resume_data["creation_date"]
+    hours = get_time_ago(date_string)
+    skills=getTagsForResume(resume_id, DB_CONFIG)
 
-        # Перенаправляем на страницу с резюме после обработки POST-запроса
-        if files_uploaded:
-            return redirect(url_for('resume', resume_id=resume_id))
+    return render_template('resume.html', resume=resume_data, db=DB_CONFIG, date=get_time_ago(resume_data["creation_date"]), skills=skills)
 
-    # Получаем данные пользователя
-    user_cookie = request.cookies.get('user_id')
-    user_name = "Нет входа"
 
-    if user_cookie:
-        user_id = int(user_cookie)
-        user = readFromDb('users', user_id)
-        if user:
-            user_name = user.get('name', 'Пользователь')
+@app.route("/verification", methods=["GET"])
+def verification():
+    users=getAllRecords(DB_CONFIG, "users")
+    username=readFromDb(DB_CONFIG, "users", request.cookies.get('user_id'))
+    if username["role"] == "moderator":
+        return render_template("verification.html", users=users, user_name=username['name'])
+    else:
+        return redirect(url_for("home"))
 
-    return render_template('resume.html', resume=resume_data, user_name=user_name)
+
+
+
 
 # Функция для проверки допустимого расширения файла
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 
 @app.route('/create', methods=['GET', 'POST'])
 def create():
     user_cookie = request.cookies.get('user_id')
     user_name = "Нет входа"
 
+    # Проверка пользователя
     if user_cookie:
         user_id = int(user_cookie)
-        user = readFromDb('users', user_id)
+        user = readFromDb(DB_CONFIG, 'users', user_id)
         if user:
-            user_name_short = user.get('name', 'Пользователь')
-            user_name = [user.get('surname', 'Пользователь'), user.get('name', 'Пользователь'), user.get('patronymic', 'Пользователь')]
+            user_name = f"{user.get('name', 'Пользователь')}"
 
     if request.method == 'POST':
         # Получаем данные из формы
-        fio = request.form['fio']
-        position = request.form['position']
-        expected_salary = request.form['expected_salary']
-        experience_years = request.form['experience_years']
-        birth_date = request.form['birth_date']
-        phone = request.form['phone']
-        email = request.form['email']
+        fio = request.form.get('fio', '')
+        position = request.form.get('position', '')
+        expected_salary = request.form.get('expected_salary', 0)
+        experience_years = request.form.get('experience_years', 0)
+        birth_date = request.form.get('birth_date', '')
+        phone = request.form.get('phone', '')
+        email = request.form.get('email', '')
         skills = request.form['skills']
-        education = request.form['education']
-        comment = request.form['comment']
+        education = request.form.get('education', '')
+        comment = request.form.get('comment', '')
+        file = request.files.get('photo')
+        
+        # Проверяем наличие фото
+        if not file or not file.filename:
+            flash("Пожалуйста, добавьте фотографию.")
+            return redirect(url_for('create'))
 
-        # Получаем максимальный ID резюме и увеличиваем его на 1
-        resumes = getAllRecords('resumes')
-        if resumes:
-            last_id = max(resumes['id'] for resumes in resumes)
-            resumes_id = last_id + 1
-        else:
-            resumes_id = 1
-
-        # Превращение из фио в 3 переменные
         fio_parts = fio.split()
-
         if len(fio_parts) == 2:
             last_name, first_name = fio_parts
-            middle_name = "" 
+            middle_name = ""
         elif len(fio_parts) == 3:
             last_name, first_name, middle_name = fio_parts
         else:
-            flash("Пожалуйста, введите ФИО в формате: Фамилия Имя Отчество.")
+            flash("Введите ФИО в формате: Фамилия Имя Отчество.")
             return redirect(url_for('create'))
 
-        # Обрабатываем файл изображения (если он был загружен)
-        file = request.files.get('photo')  # Замените 'photo' на имя вашего поля для загрузки
+        # Проверяем допустимость файла
+        if not allowed_file(file.filename):
+            flash("Недопустимый формат файла. Загрузите изображение в формате JPG, PNG.")
+            return redirect(url_for('create'))
 
-        if file and allowed_file(file.filename):
-            # Генерация уникального имени для файла (например, img.id)
-            filename = f"img.{str(resumes_id)}"  # Имя файла с id резюме
-            file_path = os.path.join(UPLOAD_FOLDER, filename)
+        # Загрузка файла
+        resumes = getAllRecords(DB_CONFIG, 'resumes')
 
-            # Создание папки, если её нет
-            if not os.path.exists(UPLOAD_FOLDER):
-                os.makedirs(UPLOAD_FOLDER)
-
-            # Сохраняем изображение
-            file.save(file_path)
-
-            # Путь для сохранения в базу данных
-            image_path = f"/static/uploads/img/{filename}"
+        if not resumes:
+            last_id = 0
         else:
-            # Если файл не был загружен или он не поддерживаемого формата
-            image_path = "/static/uploads/img/none.png"
+            try:
+                last_id = max((resume['id'] for resume in resumes if isinstance(resume, dict)), default=0)
+            except KeyError:
+                flash("Ошибка при получении данных из базы.")
+                return redirect(url_for('create'))
+            except TypeError:
+                flash("Некорректные данные в базе.")
+                return redirect(url_for('create'))
 
+        resumes_id = last_id + 1
+
+        filename = f"img-{resumes_id}.jpg"
+        file_path = os.path.join(UPLOAD_FOLDER, filename)
+        os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+        file.save(file_path)
+        image_path = f"/static/uploads/img/{filename}"
+
+        # Записываем дату создания
         creation_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-        # Добавляем резюме в базу данных (передаем все данные, включая image_path)
-        addResume(resumes_id, image_path, first_name, last_name, middle_name, position, expected_salary,
-                experience_years, birth_date, phone, email,
-                skills, education, comment, user_name, creation_date)
+        # Сохраняем резюме в базу
+        result = addResume(
+            image_path,
+            last_name,
+            first_name,
+            middle_name,
+            position,
+            int(expected_salary),
+            int(experience_years),
+            birth_date,
+            phone,
+            email,
+            education,
+            comment,
+            user_name,
+            creation_date
+        )
+
+        # Добавляем теги
+        skills = json.loads(skills)
+        for skill in skills:
+            addTag(DB_CONFIG, skill, resumes_id)
 
         flash("Резюме успешно создано!")
-        return redirect(url_for('home'))  # Перенаправляем на главную страницу
+        return redirect(url_for('home'))
 
-    return render_template("create.html", user_name=user_name_short)
+    # GET-запрос: отображение страницы создания
+    return render_template("create.html", user_name=user_name)
+
+
+
+
 
 @app.route('/resume/edit/<int:resume_id>', methods=['GET', 'POST'])
 def edit_resume(resume_id):
-    # Получаем данные резюме
-    resume_data = readFromDb("resumes", resume_id)
-    
+    resume_data = readFromDb(DB_CONFIG, "resumes", resume_id)
+    skills = getTagsForResume(resume_id, DB_CONFIG)
+
     if resume_data is None:
         flash("Резюме не найдено")
         return redirect(url_for('home'))
     
-    # Преобразуем теги из строки JSON в список
     if resume_data.get('tag'):
-        resume_data['tag'] = json.loads(resume_data['tag'])
+        try:
+            resume_data['tag'] = json.loads(resume_data['tag'])
+        except json.JSONDecodeError:
+            resume_data['tag'] = []  
 
-    # Обработка формы для изменения резюме
     if request.method == 'POST':
-        # Получаем данные из формы
         name = request.form.get('name', resume_data.get('name'))
         surname = request.form.get('surname', resume_data.get('surname'))
         patronymic = request.form.get('patronymic', resume_data.get('patronymic'))
@@ -391,28 +531,32 @@ def edit_resume(resume_id):
         email = request.form.get('email', resume_data.get('email'))
         education = request.form.get('education', resume_data.get('education'))
         comment = request.form.get('comment', resume_data.get('comment'))
-        
-        # Обновляем данные в базе данных
+        skills_form = request.form.getlist("skills")  # Множественные выбранные теги
+
+        for skill in skills_form:
+            if not tagExists(DB_CONFIG, skill, resume_id):
+                tags=json.loads(skill)
+                for tag in tags:
+                    addTag(DB_CONFIG, tag, resume_id)
+
         updates = {
             "name": name,
             "surname": surname,
             "patronymic": patronymic,
-            "post": post,
+            "position": post,
             "salary": salary,
             "experience": experience,
             "dateBirth": dateBirth,
             "telephone": telephone,
             "email": email,
             "education": education,
-            "comment": comment
+            "comment": comment,
         }
-        
-        # Обновляем резюме в базе данных
-        if updateInDb("resumes", resume_id, updates):
+
+        if updateInDb(DB_CONFIG, "resumes", resume_id, updates):
             flash("Резюме обновлено успешно!")
-        
-        # Обработка загрузки файлов
-        files_uploaded = False  # Флаг, показывающий, что файл был загружен
+
+        files_uploaded = False
         for i in range(1, 4):
             file = request.files.get(f'file_{i}')
             if file and allowed_file(file.filename):
@@ -426,28 +570,121 @@ def edit_resume(resume_id):
                 file.save(file_path)
 
                 # Обновляем путь файла в базе данных
-                if updateFileInDb(resume_id, i, file_path):
+                if updateFileInDb(DB_CONFIG, resume_id, i, file_path):
                     flash(f"Файл {i} успешно загружен!")
                     files_uploaded = True
                 else:
                     flash(f"Не удалось загрузить файл {i}.")
+        
+        photo = request.files.get('photo')
+        if photo and allowed_file(photo.filename):
+            photo_filename = secure_filename(photo.filename)
+            photo_path = os.path.join(UPLOAD_FOLDER, photo_filename)
 
-        # Перенаправляем на страницу с резюме после обработки POST-запроса
+            if not os.path.exists(UPLOAD_FOLDER):
+                os.makedirs(UPLOAD_FOLDER)
+            
+            photo.save(photo_path)
+
+            if updateResumePhoto(DB_CONFIG, resume_id, "\\" + photo_path):
+                flash("Фото обновлено успешно!")
+                files_uploaded = True
+            else:
+                flash("Не удалось обновить фото.")
+        
         if files_uploaded:
-            return redirect(url_for('resume', resume_id=resume_id))
+            return redirect(url_for('resume', resume_id=resume_id, skills=skills))
         else:
-            return redirect(url_for('edit_resume', resume_id=resume_id))
+            return redirect(url_for('resume', resume_id=resume_id))
 
-    # Получаем данные пользователя
     user_cookie = request.cookies.get('user_id')
     user_name = "Нет входа"
     if user_cookie:
         user_id = int(user_cookie)
-        user = readFromDb('users', user_id)
+        user = readFromDb(DB_CONFIG, 'users', user_id)
         if user:
             user_name = user.get('name', 'Пользователь')
+    
+    files = getFileResume(DB_CONFIG, resume_data["id"], 0)
+    return render_template('edit_resume.html', resume=resume_data, user_name=user_name, files=files, skills=skills)
 
-    return render_template('edit_resume.html', resume=resume_data, user_name=user_name)
+
+@app.route("/verify/<int:userId>/<string:code>", methods=["GET"])
+def verify_account(userId, code):
+    connection = pymysql.connect(**DB_CONFIG)
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT * FROM `activation_codes` WHERE `user_id` = %s AND `status` = %s", (userId, 0))
+            check_code = cursor.fetchone()
+
+            if check_code and check_code[2] == code: 
+                cursor.execute("UPDATE `activation_codes` SET `status` = %s WHERE `user_id` = %s AND `code` = %s", (1, userId, code))
+                cursor.execute("UPDATE `users` SET `verification` = %s WHERE `id` =%s", (1,userId))
+                connection.commit() 
+                return redirect(url_for("home"))
+            else:
+                return "Неверный код активации или код не найден."
+
+    except Exception as e:
+        return f"Ошибка при верификации: {str(e)}"
+    finally:
+        connection.close()
+
+
+
+
+
+
+@app.route("/remove_tag/<int:tagId>", methods=["POST"])
+def delete_tag(tagId):
+    resume_id = request.json.get('resume_id')
+
+    if not resume_id:
+        return jsonify({"error": "resume_id is required"}), 400
+    
+    removeTag(DB_CONFIG, tagId, resume_id)
+    return jsonify({"resume_id": resume_id})
+
+@app.route('/account/<action>/<int:user_id>', methods=['POST'])
+def account_action(action, user_id):
+    data = request.get_json()
+    account_id = data.get('accountId')
+    
+    if not account_id:
+        return jsonify({'success': False, 'message': 'ID аккаунта отсутствует.'})
+    verification=None
+    if action == 'verify':
+        verification = 1
+    elif action == 'unverify':
+        verification=0
+    elif action == 'block':
+        verification=2
+    elif action == 'unblock':
+        verification = 3
+    else:
+        return jsonify({'success': False, 'message': 'Неизвестное действие.'})
+    connection=pymysql.connect(**DB_CONFIG)
+    with connection.cursor() as cursor:
+        cursor.execute("UPDATE `users` SET `verification`=%s WHERE `id`=%s", (verification, user_id))
+    connection.commit()
+    return jsonify({'success': True, 'message': f'Действие "{action}" выполнено успешно.'})
+
+
+@app.route('/update-role', methods=['POST'])
+def update_role():
+    data = request.json
+    account_id = data.get('account_id')
+    new_role = data.get('role')
+    role=None
+    if int(new_role) == 1:
+        role = "moderator"
+    elif int(new_role) == 2:
+        role="hr"
+    connection = pymysql.connect(**DB_CONFIG)
+    with connection.cursor() as cursor:
+        cursor.execute("UPDATE `users` SET `role`=%s WHERE `id`=%s", (role, account_id))
+    connection.commit()
+    return jsonify({'message': 'Роль обновлена', 'account_id': account_id, 'role': new_role})
 
 
 if __name__ == '__main__':

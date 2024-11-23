@@ -16,7 +16,7 @@
                 </div>
                 <div class="about_person">
                     <h3>{{ resume.name }} <span class="gray-color">{{ resume.surname }}</span></h3>
-                    <p>{{ resume.post }}</p> 
+                    <p>{{ resume.position }}</p> 
                 </div>
             </div>
             <div class="skills">
@@ -29,9 +29,10 @@
                 </div>
                 {% endfor %}
             </div>
+            
             <div class="inf_hr_history">
                 <img src="/static/icons/icon.svg" alt="">
-                <p class="gray-color">{{ resume.hr_fio[1] }} {{ resume.hr_fio[2] }}</p>
+                <p class="gray-color">{{ resume.hr_fio }}</p>
             </div>
             <div class="inf_hr_history">
                 <img src="/static/icons/history.svg" alt="">
@@ -80,7 +81,7 @@
         .then(data => {
             if (data.status === "success" && data.message) {
                 // Показываем pop-up с сообщением и ссылкой
-                showPopUp(data.message, data.url); // Передаем URL в showPopUp
+                showPopUp(data.message, "/resume/"+resumeId); // Передаем URL в showPopUp
             } else {
                 console.warn("Сообщение для pop-up отсутствует или статус не 'success'.");
             }
@@ -90,6 +91,7 @@
         });
 
     }
+
 
     // Обработчики событий для drag и drop
     function allowDrop(event) {
