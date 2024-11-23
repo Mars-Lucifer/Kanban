@@ -804,3 +804,20 @@ tbody tr:hover .custom-select {
 .btn_despawn {
     animation: btnDespawn 400ms ease forwards;
 }
+
+.cup_name{
+    padding: 16px 22px;
+    flex-direction: column;
+    direction: flex;
+    gap: 12px;
+    border-radius: 16px;
+    background-color: #1964FA;
+    color: #FFFFFF;
+}
+
+.right_box{
+    display: flex;
+    direction: flex;
+    flex-direction: column;
+    gap: 12px;  
+}
