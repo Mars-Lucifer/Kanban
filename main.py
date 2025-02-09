@@ -360,13 +360,12 @@ def signin():
         users = getAllRecords(DB_CONFIG,'users')
         user = next((u for u in users if u['email'] == email and u['password'] == password), None)
 
-        if email == moder_mail:
-            connection = pymysql.connect(**DB_CONFIG)
-            with connection.cursor() as cursor:
-                cursor.execute("UPDATE `users` SET `role`=%s WHERE `id`=%s", ('moderator', user['id']))
-            connection.commit()
-
         if user:
+            if email == moder_mail:
+                connection = pymysql.connect(**DB_CONFIG)
+                with connection.cursor() as cursor:
+                    cursor.execute("UPDATE `users` SET `role`=%s WHERE `id`=%s", ('moderator', user['id']))
+                connection.commit()
             if user.get('verification') == 1:
                 response = make_response(redirect(url_for('home')))
                 response.set_cookie('user_id', str(user['id']), httponly=True, secure=True)

@@ -152,9 +152,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `surname`, `patronymic`, `email`, `password`, `verification`, `role`) VALUES
-(1, 'james', 'lebron', 'None', 'lebronstreed@gmail.com', 'e396f98686908bf6b996c255b021342232dd1d5636d2f8b69077a92d8dba5d5e', 1, 'moderator'),
-(2, 'Никита', 'Рыбалко', 'Станиславович', 'nikitarybalko897@gmail.com', '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4', 1, 'moderator'),
-(3, 'Mars', 'Lucifer', 'Pipa', 'pipu@gmail.com', '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4', 1, 'hr');
+(1, 'Никита', 'Рыбалко', 'Станиславович', 'nikitarybalko897@gmail.com', '12345678', 1, 'moderator'),
 
 --
 -- Indexes for dumped tables

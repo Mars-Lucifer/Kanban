@@ -375,9 +375,10 @@ def updateFileInDb(db, resume_id, file_number, file_path):
 
 
 def hash_password(text: str, algorithm: str = 'sha256') -> str:
-    hash_obj = hashlib.new(algorithm)
-    hash_obj.update(text.encode('utf-8'))
-    return hash_obj.hexdigest()
+    # hash_obj = hashlib.new(algorithm)
+    # hash_obj.update(text.encode('utf-8'))
+    # return hash_obj.hexdigest()
+    return text
 
 
 def get_time_ago(date_string):
